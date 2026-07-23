@@ -51,7 +51,7 @@ Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
 local frameStroke = Instance.new("UIStroke", mainFrame)
 frameStroke.Thickness = 2
 
--- CAPA SUPERIOR (BARRA DE TÍTULO CON FUENTE DE MINECRAFT)
+-- CAPA SUPERIOR (BARRA DE TÍTULO)
 local topBar = Instance.new("Frame", mainFrame)
 topBar.Size = UDim2.new(1, 0, 0, 40)
 topBar.BackgroundTransparency = 1
@@ -62,7 +62,7 @@ titleLabel.Position = UDim2.new(0, 8, 0, 0)
 titleLabel.BackgroundTransparency = 1
 titleLabel.Text = "fluz hub by jesuslmk"
 titleLabel.TextSize = 9
-titleLabel.Font = Enum.Font.Arcade
+titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 local flagLabel = Instance.new("TextLabel", topBar)
@@ -99,7 +99,7 @@ tabGeneralBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
 tabGeneralBtn.Text = "GENERAL"
 tabGeneralBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 tabGeneralBtn.TextSize = 11
-tabGeneralBtn.Font = Enum.Font.FredokaOne
+tabGeneralBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", tabGeneralBtn).CornerRadius = UDim.new(0, 6)
 
 local tabMiscBtn = Instance.new("TextButton", mainFrame)
@@ -108,7 +108,7 @@ tabMiscBtn.Position = UDim2.new(0.52, 0, 0, 45)
 tabMiscBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
 tabMiscBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
 tabMiscBtn.TextSize = 11
-tabMiscBtn.Font = Enum.Font.FredokaOne
+tabMiscBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", tabMiscBtn).CornerRadius = UDim.new(0, 6)
 
 local generalContainer = Instance.new("ScrollingFrame", mainFrame)
@@ -282,7 +282,7 @@ createButton(miscContainer, "🔄 Reset Configs", 230, function()
 	end
 end)
 
--- MOTOR DE EFECTO RGB Y SILENT AIM A TRAVÉS DE PAREDES
+-- MOTOR DE EFECTO RGB Y SILENT AIM
 runService.RenderStepped:Connect(function()
 	local hue = tick() % 5 / 5
 	local rgbColor = Color3.fromHSV(hue, 1, 1)
@@ -294,7 +294,6 @@ runService.RenderStepped:Connect(function()
 		lp.Character.Humanoid.WalkSpeed = SpeedEnabled and WalkSpeedValue or 16
 	end
 
-	-- Lógica Silent Aim con detección de paredes/enemigos cercanos a través del mapa
 	if AUTO_SHOOT_ON then
 		local closestEnemy = nil
 		local shortestDistance = math.huge
@@ -304,9 +303,6 @@ runService.RenderStepped:Connect(function()
 				local hum = v.Character:FindFirstChildOfClass("Humanoid")
 				if hum and hum.Health > 0 then
 					local head = v.Character.Head
-					local screenPos, onScreen = camera:WorldToViewportPoint(head.Position)
-					
-					-- Detecta enemigos incluso si están detrás de paredes usando la posición 3D directa
 					if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
 						local dist = (lp.Character.HumanoidRootPart.Position - head.Position).Magnitude
 						if dist < shortestDistance then
@@ -320,7 +316,6 @@ runService.RenderStepped:Connect(function()
 
 		if closestEnemy and shortestDistance < 300 then
 			pcall(function()
-				-- Simula un disparo directo al objetivo detectado por el wall/silent aim
 				mouse1press()
 				task.wait(0.03)
 				mouse1release()
