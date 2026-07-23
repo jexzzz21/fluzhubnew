@@ -4,8 +4,9 @@ local lp = players.LocalPlayer
 local ws = game:GetService("Workspace")
 local runService = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
+local camera = ws.CurrentCamera
 
-local FLING_ALL_ON = false
+local AUTO_SHOOT_ON = false
 local ESP_ON = false
 local HITBOX_ON = false
 local HITBOX_SIZE = 5
@@ -91,8 +92,8 @@ local function isEnemy(player)
 	return true
 end
 
-createButton("🌪️ FLING ALL: OFF", 40, function(state)
-	FLING_ALL_ON = state
+createButton("🎯 Auto Shoot: OFF", 40, function(state)
+	AUTO_SHOOT_ON = state
 end)
 
 createButton("⚡ Speed (25): OFF", 77, function(state)
@@ -124,51 +125,46 @@ createButton("🔄 Reset Speed", 262, function()
 	end
 end)
 
--- MOTOR DE FLING Y VELOCIDAD
-task.spawn(function()
-	local function flingTarget(targetHRP)
-		local character = lp.Character
-		if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-		local hrp = character.HumanoidRootPart
-		
-		local vel = Instance.new("BodyAngularVelocity")
-		vel.Name = "FlingForce"
-		vel.Parent = hrp
-		vel.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-		vel.AngularVelocity = Vector3.new(0, 99999, 0)
-		
-		local startTime = tick()
-		while tick() - startTime < 0.25 do
-			if not FLING_ALL_ON then break end
-			hrp.CFrame = targetHRP.CFrame
-			task.wait()
-		end
-		vel:Destroy()
+-- MOTOR DE AUTO SHOOT Y VELOCIDAD
+runService.RenderStepped:Connect(function()
+	if lp.Character and lp.Character:FindFirstChild("Humanoid") then
+		lp.Character.Humanoid.WalkSpeed = WalkSpeedValue
 	end
 
-	while true do
-		task.wait(0.2)
-		pcall(function()
-			if lp.Character and lp.Character:FindFirstChild("Humanoid") then
-				lp.Character.Humanoid.WalkSpeed = WalkSpeedValue
-			end
+	if AUTO_SHOOT_ON then
+		local closestEnemy = nil
+		local shortestDistance = math.huge
 
-			if FLING_ALL_ON then
-				for _, v in pairs(players:GetPlayers()) do
-					if not FLING_ALL_ON then break end
-					if isEnemy(v) and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-						local hum = v.Character:FindFirstChildOfClass("Humanoid")
-						if hum and hum.Health > 0 then
-							flingTarget(v.Character.HumanoidRootPart)
+		for _, v in pairs(players:GetPlayers()) do
+			if isEnemy(v) and v.Character and v.Character:FindFirstChild("Head") then
+				local hum = v.Character:FindFirstChildOfClass("Humanoid")
+				if hum and hum.Health > 0 then
+					local head = v.Character.Head
+					local screenPos, onScreen = camera:WorldToViewportPoint(head.Position)
+					if onScreen then
+						local mousePos = uis:GetMouseLocation()
+						local dist = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
+						if dist < shortestDistance then
+							shortestDistance = dist
+							closestEnemy = head
 						end
 					end
 				end
 			end
-		end)
+		end
+
+		-- Disparo automático si encuentra un objetivo en la mira cercana
+		if closestEnemy and shortestDistance < 150 then
+			pcall(function()
+				mouse1press()
+				task.wait(0.05)
+				mouse1release()
+			end)
+		end
 	end
 end)
 
--- INFINITE JUMP (Corregido para evitar errores en Delta)
+-- INFINITE JUMP
 uis.JumpRequest:Connect(function()
 	if InfiniteJumpEnabled and lp.Character then
 		local humanoid = lp.Character:FindFirstChildOfClass("Humanoid")
@@ -181,7 +177,8 @@ end)
 -- NOCLIP
 runService.Stepped:Connect(function()
 	if NoClipEnabled and lp.Character then
-		for _, part in pairs(lp.Character:GetDescendants()) do
+		local char = lp.Character
+		for _, part in pairs(char:GetDescendants()) do
 			if part:IsA("BasePart") and part.CanCollide then
 				part.CanCollide = false
 			end
