@@ -451,7 +451,7 @@ minimizeBtn.MouseButton1Click:Connect(function()
 	contentContainer.Visible = not minimized
 	sidebar.Visible = not minimized
 	mainFrame.Size = minimized and UDim2.new(0, 580, 0, 40) or UDim2.new(0, 580, 0, 360)
-	minimizeBtn.Text = minimized and "+" : "-"
+	minimizeBtn.Text = minimized and "+" or "-"
 end)
 
 closeBtn.MouseButton1Click:Connect(function()
@@ -541,89 +541,4 @@ task.spawn(function()
 	end
 end)
 
--- MOTOR MOVIMIENTO (SPEED, JUMP, FLY, NOCLIP)
-runService.RenderStepped:Connect(function()
-	if lp.Character and lp.Character:FindFirstChild("Humanoid") then
-		local hum = lp.Character.Humanoid
-		hum.WalkSpeed = SpeedEnabled and WalkSpeedValue or 16
-		if JumpEnabled then
-			hum.JumpPower = JumpPowerValue
-		end
-	end
-
-	if FlyEnabled and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-		local hrp = lp.Character.HumanoidRootPart
-		hrp.Velocity = Vector3.new(0, 1, 0)
-	end
-end)
-
-uis.JumpRequest:Connect(function()
-	if InfiniteJumpEnabled and lp.Character then
-		local h = lp.Character:FindFirstChildOfClass("Humanoid")
-		if h then h:ChangeState(Enum.HumanoidStateType.Jumping) end
-	end
-end)
-
-runService.Stepped:Connect(function()
-	if NoClipEnabled and lp.Character then
-		for _, p in pairs(lp.Character:GetDescendants()) do
-			if p:IsA("BasePart") and p.CanCollide then p.CanCollide = false end
-		end
-	end
-end)
-
--- MOTOR ESP Y ARMA EQUIPADA + HITBOX
-runService.RenderStepped:Connect(function()
-	for _, p in pairs(players:GetPlayers()) do
-		if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-			local hrp = p.Character.HumanoidRootPart
-			local enemy = isEnemy(p)
-			
-			if HITBOX_ON and enemy then
-				hrp.Size = Vector3.new(HITBOX_SIZE, HITBOX_SIZE, HITBOX_SIZE)
-				hrp.Transparency = ESP_ON and 0.7 or 1
-				hrp.Color = Color3.new(0.5, 0, 1)
-				hrp.CanCollide = false
-			else
-				hrp.Size = Vector3.new(2, 2, 1)
-				hrp.Transparency = 1
-			end
-
-			if ESP_ON and enemy then
-				if not p.Character:FindFirstChild("Highlight") then
-					local hl = Instance.new("Highlight", p.Character)
-					hl.FillColor = Color3.fromRGB(138, 43, 226)
-					hl.OutlineColor = Color3.fromRGB(255, 255, 255)
-				end
-				
-				-- Detectar arma equipada
-				local toolName = "Ninguna"
-				local tool = p.Character:FindFirstChildOfClass("Tool")
-				if tool then toolName = tool.Name end
-				
-				local bill = p.Character:FindFirstChild("FluzESPBill")
-				if not bill then
-					bill = Instance.new("BillboardGui", p.Character)
-					bill.Name = "FluzESPBill"
-					bill.Size = UDim2.new(0, 100, 0, 40)
-					bill.StudsOffset = Vector3.new(0, 3, 0)
-					bill.AlwaysOnTop = true
-					
-					local text = Instance.new("TextLabel", bill)
-					text.Name = "Text"
-					text.Size = UDim2.new(1, 0, 1, 0)
-					text.BackgroundTransparency = 1
-					text.TextColor3 = Color3.fromRGB(220, 180, 255)
-					text.TextSize = 10
-					text.Font = Enum.Font.GothamBold
-				end
-				if bill:FindFirstChild("Text") then
-					bill.Text.Text = p.Name .. "\nArma: " .. toolName
-				end
-			else
-				if p.Character:FindFirstChild("Highlight") then p.Character.Highlight:Destroy() end
-				if p.Character:FindFirstChild("FluzESPBill") then p.Character.FluzESPBill:Destroy() end
-			end
-		end
-	end
-end)
+-- MOTOR MOVIMIENTO (SPEED, JUMP,
