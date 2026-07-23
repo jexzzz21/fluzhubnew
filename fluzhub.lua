@@ -27,7 +27,7 @@ local toggleButton = Instance.new("ImageButton", screenGui)
 toggleButton.Size = UDim2.new(0, 48, 0, 48)
 toggleButton.Position = UDim2.new(0.02, 0, 0.3, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-toggleButton.Image = "rbxassetid://85600975100250"
+toggleButton.Image = "rbxassetid://8126145670"
 toggleButton.ScaleType = Enum.ScaleType.Fit
 toggleButton.Active = true
 toggleButton.Draggable = true
@@ -254,7 +254,7 @@ local function cleanActivate()
 	end)
 end
 
-createButton(generalContainer, "🎯 Auto Shoot (Random Hitbox): OFF", 10, function(state)
+createButton(generalContainer, "🎯 Auto Shoot (Random Parts): OFF", 10, function(state)
 	AUTO_SHOOT_ON = state
 end)
 
@@ -298,7 +298,6 @@ createButton(miscContainer, "🔄 Reset Configs", 230, function()
 	end
 end)
 
--- MOTOR RGB Y AUTO SHOOT CON SELECCIÓN ALEATORIA (CABEZA, TORSO, PIE)
 runService.RenderStepped:Connect(function()
 	local hue = tick() % 5 / 5
 	local rgbColor = Color3.fromHSV(hue, 1, 1)
@@ -309,48 +308,53 @@ runService.RenderStepped:Connect(function()
 	if lp.Character and lp.Character:FindFirstChild("Humanoid") then
 		lp.Character.Humanoid.WalkSpeed = SpeedEnabled and WalkSpeedValue or 16
 	end
+end)
 
-	if AUTO_SHOOT_ON then
-		local validTargetFound = false
-		local shortestDistance = math.huge
-		local hitParts = {"Head", "HumanoidRootPart", "LeftFoot", "RightFoot"}
+task.spawn(function()
+	local hitParts = {"Head", "HumanoidRootPart", "LeftFoot", "RightFoot"}
+	while true do
+		task.wait(0.1)
+		if AUTO_SHOOT_ON then
+			pcall(function()
+				local validTargetFound = false
+				local shortestDistance = math.huge
 
-		for _, v in pairs(players:GetPlayers()) do
-			if isEnemy(v) and v.Character then
-				local hum = v.Character:FindFirstChildOfClass("Humanoid")
-				if hum and hum.Health > 0 then
-					-- Selecciona aleatoriamente una parte del cuerpo en cada ciclo
-					local randomPartName = hitParts[math.random(1, #hitParts)]
-					local targetPart = v.Character:FindFirstChild(randomPartName) or v.Character:FindFirstChild("Head")
-					
-					if targetPart and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-						local origin = lp.Character.HumanoidRootPart.Position
-						local targetPos = targetPart.Position
-						local dist = (origin - targetPos).Magnitude
+				for _, v in pairs(players:GetPlayers()) do
+					if isEnemy(v) and v.Character then
+						local hum = v.Character:FindFirstChildOfClass("Humanoid")
+						if hum and hum.Health > 0 then
+							local randomPartName = hitParts[math.random(1, #hitParts)]
+							local targetPart = v.Character:FindFirstChild(randomPartName) or v.Character:FindFirstChild("Head")
+							
+							if targetPart and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+								local origin = lp.Character.HumanoidRootPart.Position
+								local targetPos = targetPart.Position
+								local dist = (origin - targetPos).Magnitude
 
-						if dist < 300 then
-							local raycastParams = RaycastParams.new()
-							raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-							raycastParams.FilterDescendantsInstances = {lp.Character}
-							raycastParams.IgnoreWater = true
+								if dist < 300 then
+									local raycastParams = RaycastParams.new()
+									raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+									raycastParams.FilterDescendantsInstances = {lp.Character}
+									raycastParams.IgnoreWater = true
 
-							local raycastResult = ws:Raycast(origin, (targetPos - origin).Unit * dist, raycastParams)
+									local raycastResult = ws:Raycast(origin, (targetPos - origin).Unit * dist, raycastParams)
 
-							if not raycastResult or raycastResult.Instance:IsDescendantOf(v.Character) then
-								if dist < shortestDistance then
-									shortestDistance = dist
-									validTargetFound = true
+									if not raycastResult or raycastResult.Instance:IsDescendantOf(v.Character) then
+										if dist < shortestDistance then
+											shortestDistance = dist
+											validTargetFound = true
+										end
+									end
 								end
 							end
 						end
 					end
 				end
-			end
-		end
 
-		if validTargetFound then
-			cleanActivate()
-			task.wait(0.08)
+				if validTargetFound then
+					cleanActivate()
+				end
+			end)
 		end
 	end
 end)
