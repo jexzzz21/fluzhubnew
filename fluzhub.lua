@@ -4,6 +4,7 @@ local lp = players.LocalPlayer
 local ws = game:GetService("Workspace")
 local runService = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
+local vim = game:GetService("VirtualInputManager")
 local localizationService = game:GetService("LocalizationService")
 local camera = ws.CurrentCamera
 
@@ -238,7 +239,22 @@ local function equipKnife()
 	end
 end
 
-createButton(generalContainer, "🎯 Auto Shoot (Silent Wall): OFF", 10, function(state)
+local function cleanActivate()
+	pcall(function()
+		if lp.Character then
+			local tool = lp.Character:FindFirstChildOfClass("Tool")
+			if tool then
+				tool:Activate()
+			else
+				vim:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+				task.wait(0.01)
+				vim:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+			end
+		end
+	end)
+end
+
+createButton(generalContainer, "🎯 Auto Shoot (Random Hitbox): OFF", 10, function(state)
 	AUTO_SHOOT_ON = state
 end)
 
@@ -282,7 +298,7 @@ createButton(miscContainer, "🔄 Reset Configs", 230, function()
 	end
 end)
 
--- MOTOR DE EFECTO RGB Y SILENT AIM
+-- MOTOR RGB Y AUTO SHOOT CON SELECCIÓN ALEATORIA (CABEZA, TORSO, PIE)
 runService.RenderStepped:Connect(function()
 	local hue = tick() % 5 / 5
 	local rgbColor = Color3.fromHSV(hue, 1, 1)
@@ -295,51 +311,79 @@ runService.RenderStepped:Connect(function()
 	end
 
 	if AUTO_SHOOT_ON then
-		local closestEnemy = nil
+		local validTargetFound = false
 		local shortestDistance = math.huge
+		local hitParts = {"Head", "HumanoidRootPart", "LeftFoot", "RightFoot"}
 
 		for _, v in pairs(players:GetPlayers()) do
-			if isEnemy(v) and v.Character and v.Character:FindFirstChild("Head") then
+			if isEnemy(v) and v.Character then
 				local hum = v.Character:FindFirstChildOfClass("Humanoid")
 				if hum and hum.Health > 0 then
-					local head = v.Character.Head
-					if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-						local dist = (lp.Character.HumanoidRootPart.Position - head.Position).Magnitude
-						if dist < shortestDistance then
-							shortestDistance = dist
-							closestEnemy = head
+					-- Selecciona aleatoriamente una parte del cuerpo en cada ciclo
+					local randomPartName = hitParts[math.random(1, #hitParts)]
+					local targetPart = v.Character:FindFirstChild(randomPartName) or v.Character:FindFirstChild("Head")
+					
+					if targetPart and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+						local origin = lp.Character.HumanoidRootPart.Position
+						local targetPos = targetPart.Position
+						local dist = (origin - targetPos).Magnitude
+
+						if dist < 300 then
+							local raycastParams = RaycastParams.new()
+							raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+							raycastParams.FilterDescendantsInstances = {lp.Character}
+							raycastParams.IgnoreWater = true
+
+							local raycastResult = ws:Raycast(origin, (targetPos - origin).Unit * dist, raycastParams)
+
+							if not raycastResult or raycastResult.Instance:IsDescendantOf(v.Character) then
+								if dist < shortestDistance then
+									shortestDistance = dist
+									validTargetFound = true
+								end
+							end
 						end
 					end
 				end
 			end
 		end
 
-		if closestEnemy and shortestDistance < 300 then
-			pcall(function()
-				mouse1press()
-				task.wait(0.03)
-				mouse1release()
-			end)
+		if validTargetFound then
+			cleanActivate()
+			task.wait(0.08)
 		end
 	end
 end)
 
 task.spawn(function()
 	while true do
-		task.wait(0.2)
+		task.wait(0.15)
 		pcall(function()
 			if KILL_ALL_ON then
 				equipKnife()
+				local aliveEnemies = 0
+				
 				for _, v in pairs(players:GetPlayers()) do
-					if not KILL_ALL_ON then break end
-					if isEnemy(v) and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-						local hum = v.Character:FindFirstChildOfClass("Humanoid")
-						if hum and hum.Health > 0 then
-							if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-								lp.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
-								mouse1press()
-								task.wait(0.05)
-								mouse1release()
+					if isEnemy(v) and v.Character and v.Character:FindFirstChild("Humanoid") then
+						if v.Character.Humanoid.Health > 0 then
+							aliveEnemies = aliveEnemies + 1
+						end
+					end
+				end
+
+				if aliveEnemies == 0 then
+					task.wait(7)
+				else
+					for _, v in pairs(players:GetPlayers()) do
+						if not KILL_ALL_ON then break end
+						if isEnemy(v) and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+							local hum = v.Character:FindFirstChildOfClass("Humanoid")
+							if hum and hum.Health > 0 then
+								if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+									lp.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 1.5)
+									cleanActivate()
+									task.wait(0.03)
+								end
 							end
 						end
 					end
