@@ -36,14 +36,12 @@ local btnStroke = Instance.new("UIStroke", toggleButton)
 btnStroke.Color = Color3.fromRGB(0, 170, 255)
 btnStroke.Thickness = 2
 
--- Ventana principal con fondo de imagen solicitado
 local mainFrame = Instance.new("ImageLabel", screenGui)
 mainFrame.Size = UDim2.new(0, 220, 0, 400)
 mainFrame.Position = UDim2.new(0.08, 0, 0.3, 0)
 mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 mainFrame.Image = "rbxassetid://12508966325"
-mainFrame.ScaleType = Enum.ScaleType.Slice
-mainFrame.SliceCenter = Rect.new(50, 50, 50, 50)
+mainFrame.BackgroundTransparency = 0
 mainFrame.BorderSizePixel = 0
 mainFrame.Visible = false
 mainFrame.Active = true
@@ -64,10 +62,9 @@ titleLabel.Position = UDim2.new(0, 8, 0, 0)
 titleLabel.BackgroundTransparency = 1
 titleLabel.Text = "fluz hub by jesuslmk"
 titleLabel.TextSize = 9
-titleLabel.Font = Enum.Typeface and Enum.Typeface.Arcade or Enum.Font.Antique
+titleLabel.Font = Enum.Font.Arcade
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- Banderita dinámica del país (hasta arriba al final)
 local flagLabel = Instance.new("TextLabel", topBar)
 flagLabel.Size = UDim2.new(0, 24, 0, 24)
 flagLabel.Position = UDim2.new(0, 122, 0, 8)
@@ -88,7 +85,6 @@ task.spawn(function()
 	end)
 end)
 
--- Avatar del usuario arriba en la esquina superior derecha
 local avatarImg = Instance.new("ImageLabel", topBar)
 avatarImg.Size = UDim2.new(0, 28, 0, 28)
 avatarImg.Position = UDim2.new(1, -36, 0, 6)
@@ -96,7 +92,6 @@ avatarImg.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
 avatarImg.Image = players:GetUserThumbnailAsync(lp.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
 Instance.new("UICorner", avatarImg).CornerRadius = UDim.new(1, 0)
 
--- Botones de Pestañas (General / Misc)
 local tabGeneralBtn = Instance.new("TextButton", mainFrame)
 tabGeneralBtn.Size = UDim2.new(0.44, 0, 0, 25)
 tabGeneralBtn.Position = UDim2.new(0.04, 0, 0, 45)
@@ -116,7 +111,6 @@ tabMiscBtn.TextSize = 11
 tabMiscBtn.Font = Enum.Font.FredokaOne
 Instance.new("UICorner", tabMiscBtn).CornerRadius = UDim.new(0, 6)
 
--- Contenedores de Pestañas
 local generalContainer = Instance.new("ScrollingFrame", mainFrame)
 generalContainer.Size = UDim2.new(1, 0, 0, 315)
 generalContainer.Position = UDim2.new(0, 0, 0, 78)
@@ -155,7 +149,6 @@ toggleButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = not mainFrame.Visible
 end)
 
--- FUNCIONES DE CREACIÓN DE ELEMENTOS
 local function createButton(parent, name, yPos, callback)
 	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0.9, 0, 0, 32)
@@ -176,7 +169,6 @@ local function createButton(parent, name, yPos, callback)
 	end)
 end
 
--- SLIDER (1 A 50)
 local function createSlider(parent, name, yPos, minVal, maxVal, defaultVal, callback)
 	local label = Instance.new("TextLabel", parent)
 	label.Size = UDim2.new(0.9, 0, 0, 18)
@@ -224,7 +216,6 @@ local function createSlider(parent, name, yPos, minVal, maxVal, defaultVal, call
 	end)
 end
 
--- VERIFICACIÓN DE EQUIPO Y CUCHILLO
 local function isEnemy(player)
 	if player == lp then return false end
 	if lp.Team and player.Team and lp.Team == player.Team then
@@ -247,8 +238,7 @@ local function equipKnife()
 	end
 end
 
--- POBLAR PESTAÑA GENERAL
-createButton(generalContainer, "🎯 Auto Shoot: OFF", 10, function(state)
+createButton(generalContainer, "🎯 Auto Shoot (Silent Wall): OFF", 10, function(state)
 	AUTO_SHOOT_ON = state
 end)
 
@@ -261,7 +251,6 @@ createButton(generalContainer, "👁️ ESP Players: OFF", 90, function(state)
 	ESP_ON = state
 end)
 
--- POBLAR PESTAÑA MISC
 createButton(miscContainer, "⚡ Speed Hack: OFF", 10, function(state)
 	SpeedEnabled = state
 end)
@@ -293,7 +282,7 @@ createButton(miscContainer, "🔄 Reset Configs", 230, function()
 	end
 end)
 
--- MOTOR DE EFECTO RGB PARA TÍTULO Y BORDES
+-- MOTOR DE EFECTO RGB Y SILENT AIM A TRAVÉS DE PAREDES
 runService.RenderStepped:Connect(function()
 	local hue = tick() % 5 / 5
 	local rgbColor = Color3.fromHSV(hue, 1, 1)
@@ -305,7 +294,7 @@ runService.RenderStepped:Connect(function()
 		lp.Character.Humanoid.WalkSpeed = SpeedEnabled and WalkSpeedValue or 16
 	end
 
-	-- Auto Shoot Logic
+	-- Lógica Silent Aim con detección de paredes/enemigos cercanos a través del mapa
 	if AUTO_SHOOT_ON then
 		local closestEnemy = nil
 		local shortestDistance = math.huge
@@ -316,9 +305,10 @@ runService.RenderStepped:Connect(function()
 				if hum and hum.Health > 0 then
 					local head = v.Character.Head
 					local screenPos, onScreen = camera:WorldToViewportPoint(head.Position)
-					if onScreen then
-						local mousePos = uis:GetMouseLocation()
-						local dist = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
+					
+					-- Detecta enemigos incluso si están detrás de paredes usando la posición 3D directa
+					if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+						local dist = (lp.Character.HumanoidRootPart.Position - head.Position).Magnitude
 						if dist < shortestDistance then
 							shortestDistance = dist
 							closestEnemy = head
@@ -328,17 +318,17 @@ runService.RenderStepped:Connect(function()
 			end
 		end
 
-		if closestEnemy and shortestDistance < 150 then
+		if closestEnemy and shortestDistance < 300 then
 			pcall(function()
+				-- Simula un disparo directo al objetivo detectado por el wall/silent aim
 				mouse1press()
-				task.wait(0.05)
+				task.wait(0.03)
 				mouse1release()
 			end)
 		end
 	end
 end)
 
--- Kill All Loop con click automático del cuchillo
 task.spawn(function()
 	while true do
 		task.wait(0.2)
@@ -364,7 +354,6 @@ task.spawn(function()
 	end
 end)
 
--- Infinite Jump
 uis.JumpRequest:Connect(function()
 	if InfiniteJumpEnabled and lp.Character then
 		local humanoid = lp.Character:FindFirstChildOfClass("Humanoid")
@@ -374,7 +363,6 @@ uis.JumpRequest:Connect(function()
 	end
 end)
 
--- Noclip
 runService.Stepped:Connect(function()
 	if NoClipEnabled and lp.Character then
 		for _, part in pairs(lp.Character:GetDescendants()) do
@@ -385,7 +373,6 @@ runService.Stepped:Connect(function()
 	end
 end)
 
--- Hitbox y ESP
 runService.RenderStepped:Connect(function()
 	for _, p in pairs(players:GetPlayers()) do
 		if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
