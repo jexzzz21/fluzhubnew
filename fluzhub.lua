@@ -9,7 +9,7 @@ local lighting = game:GetService("Lighting")
 local camera = ws.CurrentCamera
 
 local SILENT_AIM_ON = false
-local TARGET_PART = "Head" -- "Head", "Torso", "Feet"
+local TARGET_PART = "Head"
 local KILL_ALL_ON = false
 local AUTOFARM_ON = false
 local ESP_ON = false
@@ -24,14 +24,11 @@ local FlyEnabled = false
 local NoClipEnabled = false
 local InfiniteJumpEnabled = false
 
-local CurrentLightingMode = "Normal" -- "Normal", "Bright", "FPS"
-
--- CREACIÓN DE LA UI PRINCIPAL (ESTILO MODERN SIDEBAR - MORADO/AZUL/NEGRO)
+-- CREACIÓN DE LA UI PRINCIPAL
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
 screenGui.Name = "FluzHubUltimate"
 screenGui.ResetOnSpawn = false
 
--- Botón flotante para abrir/cerrar
 local toggleButton = Instance.new("ImageButton", screenGui)
 toggleButton.Size = UDim2.new(0, 48, 0, 48)
 toggleButton.Position = UDim2.new(0.02, 0, 0.3, 0)
@@ -43,14 +40,13 @@ toggleButton.Draggable = true
 
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 10)
 local btnStroke = Instance.new("UIStroke", toggleButton)
-btnStroke.Color = Color3.fromRGB(138, 43, 226) -- Morado Neón
+btnStroke.Color = Color3.fromRGB(138, 43, 226)
 btnStroke.Thickness = 2
 
--- Marco Principal
 local mainFrame = Instance.new("Frame", screenGui)
 mainFrame.Size = UDim2.new(0, 580, 0, 360)
 mainFrame.Position = UDim2.new(0.5, -290, 0.5, -180)
-mainFrame.BackgroundColor3 = Color3.fromRGB(12, 10, 18) -- Negro purpúreo
+mainFrame.BackgroundColor3 = Color3.fromRGB(12, 10, 18)
 mainFrame.BorderSizePixel = 0
 mainFrame.Visible = true
 mainFrame.Active = true
@@ -61,7 +57,6 @@ local frameStroke = Instance.new("UIStroke", mainFrame)
 frameStroke.Color = Color3.fromRGB(85, 26, 139)
 frameStroke.Thickness = 2
 
--- BARRA SUPERIOR (TOPBAR)
 local topBar = Instance.new("Frame", mainFrame)
 topBar.Size = UDim2.new(1, 0, 0, 40)
 topBar.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
@@ -91,7 +86,6 @@ titleLabel.TextSize = 11
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- BOTÓN MINIMIZAR (-) Y CERRAR (X)
 local minimizeBtn = Instance.new("TextButton", topBar)
 minimizeBtn.Size = UDim2.new(0, 28, 0, 28)
 minimizeBtn.Position = UDim2.new(1, -68, 0, 6)
@@ -112,7 +106,6 @@ closeBtn.TextSize = 12
 closeBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
 
--- CONTENEDOR DE CONTENIDO PRINCIPAL Y SIDEBAR
 local sidebar = Instance.new("Frame", mainFrame)
 sidebar.Size = UDim2.new(0, 160, 1, -40)
 sidebar.Position = UDim2.new(0, 0, 0, 40)
@@ -120,9 +113,9 @@ sidebar.BackgroundColor3 = Color3.fromRGB(15, 10, 22)
 sidebar.BorderSizePixel = 0
 
 local sidebarPadding = Instance.new("UIPadding", sidebar)
-sidebarPadding.PaddingTop = UDim2.new(0, 10)
-sidebarPadding.PaddingLeft = UDim2.new(0, 8)
-sidebarPadding.PaddingRight = UDim2.new(0, 8)
+sidebarPadding.PaddingTop = UDim.new(0, 10)
+sidebarPadding.PaddingLeft = UDim.new(0, 8)
+sidebarPadding.PaddingRight = UDim.new(0, 8)
 
 local sidebarLayout = Instance.new("UIListLayout", sidebar)
 sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -194,7 +187,6 @@ createTabButton("💰 AutoFarm Monedas", pageAutoFarm, 5)
 createTabButton("🎭 Animaciones", pageAnims, 6)
 createTabButton("💡 Gráficos", pageGraphics, 7)
 
--- FUNCIONES COMPONENTES UI (TARJETAS Y BOTONES)
 local function createCard(parent, title, height)
 	local card = Instance.new("Frame", parent)
 	card.Size = UDim2.new(1, 0, 0, height)
@@ -291,7 +283,6 @@ local function createSlider(parent, name, minVal, maxVal, defaultVal, callback)
 	end)
 end
 
--- SECCIÓN INICIO (PERFIL Y DETALLES)
 local profileCard = createCard(pageHome, "Perfil del Jugador", 100)
 local avatarPreview = Instance.new("ImageLabel", profileCard)
 avatarPreview.Size = UDim2.new(0, 40, 0, 40)
@@ -322,7 +313,6 @@ serverInfoLabel.TextSize = 10
 serverInfoLabel.Font = Enum.Font.GothamMedium
 serverInfoLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- SECCIÓN AIMBOT / SILENT AIM
 createToggle(pageAimbot, "🎯 Silent Aim / Auto Shoot", function(state) SILENT_AIM_ON = state end)
 
 local function createPartButton(name, partName)
@@ -349,12 +339,9 @@ createPartButton("Torso (HumanoidRootPart)", "HumanoidRootPart")
 createPartButton("Extremidades / Pies", "LeftFoot")
 
 createToggle(pageAimbot, "💀 Kill All (Auto Knife)", function(state) KILL_ALL_ON = state end)
-
--- SECCIÓN VISUALES & ESP
 createToggle(pageVisuals, "👁️ ESP Players (Highlight + Arma)", function(state) ESP_ON = state end)
 createToggle(pageVisuals, "📦 Hitbox Expander", function(state) HITBOX_ON = state end)
 
--- SECCIÓN MOVIMIENTO
 createToggle(pageMovement, "⚡ Speed Hack", function(state) SpeedEnabled = state end)
 createSlider(pageMovement, "Velocidad", 1, 50, 16, function(val) WalkSpeedValue = val end)
 createToggle(pageMovement, "🦘 High Jump", function(state) JumpEnabled = state end)
@@ -363,10 +350,8 @@ createToggle(pageMovement, "🛸 Fly Mode (Vuelo)", function(state) FlyEnabled =
 createToggle(pageMovement, "👻 Noclip (Atravesar paredes)", function(state) NoClipEnabled = state end)
 createToggle(pageMovement, "🦘 Infinite Jump", function(state) InfiniteJumpEnabled = state end)
 
--- SECCIÓN AUTOFARM MONEDAS
 createToggle(pageAutoFarm, "💰 AutoFarm Monedas / Drops", function(state) AUTOFARM_ON = state end)
 
--- SECCIÓN ANIMACIONES (ROBLOX PACKS)
 local function createAnimButton(name, animId)
 	local btn = Instance.new("TextButton", pageAnims)
 	btn.Size = UDim2.new(1, 0, 0, 32)
@@ -403,7 +388,6 @@ createAnimButton("Adidas / Street Style", "616156119")
 createAnimButton("Knight Animation", "657595757")
 createAnimButton("Zombie Animation", "616158929")
 
--- SECCIÓN GRÁFICOS E ILUMINACIÓN
 local function setLightingMode(mode)
 	if mode == "Bright" then
 		lighting.Brightness = 3
@@ -444,7 +428,6 @@ btnFPS.TextXAlignment = Enum.TextXAlignment.Left
 Instance.new("UICorner", btnFPS).CornerRadius = UDim.new(0, 6)
 btnFPS.MouseButton1Click:Connect(function() setLightingMode("FPS") end)
 
--- CONTROLES DE LA BARRA SUPERIOR (MINIMIZAR Y CERRAR)
 local minimized = false
 minimizeBtn.MouseButton1Click:Connect(function()
 	minimized = not minimized
@@ -462,7 +445,6 @@ toggleButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = not mainFrame.Visible
 end)
 
--- LÓGICA DE FUNCIONAMIENTO EN SEGUNDO PLANO
 local function isEnemy(player)
 	if player == lp then return false end
 	if lp.Team and player.Team and lp.Team == player.Team then return false end
@@ -483,7 +465,6 @@ local function cleanActivate()
 	end)
 end
 
--- MOTOR SILENT AIM / AUTO SHOOT
 task.spawn(function()
 	while true do
 		task.wait(0.08)
@@ -521,7 +502,6 @@ task.spawn(function()
 	end
 end)
 
--- MOTOR AUTOFARM MONEDAS / DROPS
 task.spawn(function()
 	while true do
 		task.wait(0.5)
@@ -541,4 +521,29 @@ task.spawn(function()
 	end
 end)
 
--- MOTOR MOVIMIENTO (SPEED, JUMP,
+runService.RenderStepped:Connect(function()
+	if lp.Character and lp.Character:FindFirstChild("Humanoid") then
+		local hum = lp.Character.Humanoid
+		hum.WalkSpeed = SpeedEnabled and WalkSpeedValue or 16
+		if JumpEnabled then
+			hum.JumpPower = JumpPowerValue
+		end
+	end
+
+	if FlyEnabled and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+		local hrp = lp.Character.HumanoidRootPart
+		hrp.Velocity = Vector3.new(0, 1, 0)
+	end
+end)
+
+uis.JumpRequest:Connect(function()
+	if InfiniteJumpEnabled and lp.Character then
+		local h = lp.Character:FindFirstChildOfClass("Humanoid")
+		if h then h:ChangeState(Enum.HumanoidStateType.Jumping) end
+	end
+end)
+
+runService.Stepped:Connect(function()
+	if NoClipEnabled and lp.Character then
+		for _, p in pairs(lp.Character:GetDescendants()) do
+			if p:Is
