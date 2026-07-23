@@ -168,10 +168,13 @@ task.spawn(function()
 	end
 end)
 
--- INFINITE JUMP
+-- INFINITE JUMP (Corregido para evitar errores en Delta)
 uis.JumpRequest:Connect(function()
-	if InfiniteJumpEnabled and lp.Character and lp.Character:FindFirstChildOfClass("Humanoid") then
-		lp.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+	if InfiniteJumpEnabled and lp.Character then
+		local humanoid = lp.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		end
 	end
 end)
 
@@ -215,4 +218,3 @@ runService.RenderStepped:Connect(function()
 		end
 	end
 end)
-``` 🦭✌️
