@@ -24,107 +24,106 @@ local FlyEnabled = false
 local NoClipEnabled = false
 local InfiniteJumpEnabled = false
 
--- CREACIÓN DE LA UI PRINCIPAL
+-- CREACIÓN DE LA UI PRINCIPAL (ESTILO AXEL HUB)
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
-screenGui.Name = "FluzHubUltimate"
+screenGui.Name = "FluzHubModern"
 screenGui.ResetOnSpawn = false
 
 local toggleButton = Instance.new("ImageButton", screenGui)
 toggleButton.Size = UDim2.new(0, 48, 0, 48)
 toggleButton.Position = UDim2.new(0.02, 0, 0.3, 0)
-toggleButton.BackgroundColor3 = Color3.fromRGB(20, 15, 30)
-toggleButton.Image = "rbxassetid://8126145670"
+toggleButton.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+toggleButton.Image = "rbxassetid://6861991321"
 toggleButton.ScaleType = Enum.ScaleType.Fit
 toggleButton.Active = true
 toggleButton.Draggable = true
 
-Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 12)
 local btnStroke = Instance.new("UIStroke", toggleButton)
-btnStroke.Color = Color3.fromRGB(138, 43, 226)
-btnStroke.Thickness = 2
+btnStroke.Color = Color3.fromRGB(40, 40, 40)
+btnStroke.Thickness = 1.5
 
 local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 580, 0, 360)
-mainFrame.Position = UDim2.new(0.5, -290, 0.5, -180)
-mainFrame.BackgroundColor3 = Color3.fromRGB(12, 10, 18)
+mainFrame.Size = UDim2.new(0, 600, 0, 380)
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -190)
+mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 mainFrame.BorderSizePixel = 0
 mainFrame.Visible = true
 mainFrame.Active = true
 mainFrame.Draggable = true
 
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
 local frameStroke = Instance.new("UIStroke", mainFrame)
-frameStroke.Color = Color3.fromRGB(85, 26, 139)
-frameStroke.Thickness = 2
+frameStroke.Color = Color3.fromRGB(45, 45, 45)
+frameStroke.Thickness = 1
 
+-- BARRA SUPERIOR MINIMALISTA
 local topBar = Instance.new("Frame", mainFrame)
-topBar.Size = UDim2.new(1, 0, 0, 40)
-topBar.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-topBar.BorderSizePixel = 0
-Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 12)
-
-local topBarCover = Instance.new("Frame", topBar)
-topBarCover.Size = UDim2.new(1, 0, 0, 12)
-topBarCover.Position = UDim2.new(0, 0, 1, -12)
-topBarCover.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-topBarCover.BorderSizePixel = 0
+topBar.Size = UDim2.new(1, 0, 0, 36)
+topBar.BackgroundTransparency = 1
 
 local hubIcon = Instance.new("ImageLabel", topBar)
-hubIcon.Size = UDim2.new(0, 26, 0, 26)
-hubIcon.Position = UDim2.new(0, 10, 0, 7)
-hubIcon.BackgroundColor3 = Color3.fromRGB(30, 20, 45)
-hubIcon.Image = "rbxassetid://8126145670"
-Instance.new("UICorner", hubIcon).CornerRadius = UDim.new(0, 6)
+hubIcon.Size = UDim2.new(0, 20, 0, 20)
+hubIcon.Position = UDim2.new(0, 12, 0, 8)
+hubIcon.BackgroundTransparency = 1
+hubIcon.Image = "rbxassetid://6861991321"
 
 local titleLabel = Instance.new("TextLabel", topBar)
-titleLabel.Size = UDim2.new(0, 380, 1, 0)
-titleLabel.Position = UDim2.new(0, 46, 0, 0)
+titleLabel.Size = UDim2.new(0, 300, 1, 0)
+titleLabel.Position = UDim2.new(0, 40, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "FLUZ HUB | " .. game.Name .. " [v2.0]  |  Activos: " .. #players:GetPlayers()
-titleLabel.TextColor3 = Color3.fromRGB(220, 200, 255)
-titleLabel.TextSize = 11
+titleLabel.Text = "Fluz Hub\n<font size='9' color='rgb(140,140,140)'>by jexzzz</font>"
+titleLabel.RichText = true
+titleLabel.TextColor3 = Color3.fromRGB(240, 240, 240)
+titleLabel.TextSize = 12
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 local minimizeBtn = Instance.new("TextButton", topBar)
-minimizeBtn.Size = UDim2.new(0, 28, 0, 28)
-minimizeBtn.Position = UDim2.new(1, -68, 0, 6)
-minimizeBtn.BackgroundColor3 = Color3.fromRGB(40, 25, 60)
+minimizeBtn.Size = UDim2.new(0, 24, 0, 24)
+minimizeBtn.Position = UDim2.new(1, -64, 0, 6)
+minimizeBtn.BackgroundTransparency = 1
 minimizeBtn.Text = "-"
-minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
 minimizeBtn.TextSize = 14
 minimizeBtn.Font = Enum.Font.GothamBold
-Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
 
 local closeBtn = Instance.new("TextButton", topBar)
-closeBtn.Size = UDim2.new(0, 28, 0, 28)
-closeBtn.Position = UDim2.new(1, -34, 0, 6)
-closeBtn.BackgroundColor3 = Color3.fromRGB(80, 20, 40)
-closeBtn.Text = "X"
-closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.Size = UDim2.new(0, 24, 0, 24)
+closeBtn.Position = UDim2.new(1, -32, 0, 6)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Text = "✕"
+closeBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
 closeBtn.TextSize = 12
 closeBtn.Font = Enum.Font.GothamBold
-Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
 
-local sidebar = Instance.new("Frame", mainFrame)
-sidebar.Size = UDim2.new(0, 160, 1, -40)
-sidebar.Position = UDim2.new(0, 0, 0, 40)
-sidebar.BackgroundColor3 = Color3.fromRGB(15, 10, 22)
-sidebar.BorderSizePixel = 0
-
-local sidebarPadding = Instance.new("UIPadding", sidebar)
-sidebarPadding.PaddingTop = UDim.new(0, 10)
-sidebarPadding.PaddingLeft = UDim.new(0, 8)
-sidebarPadding.PaddingRight = UDim.new(0, 8)
+-- BARRA LATERAL (SIDEBAR)
+local sidebar = Instance.new("ScrollingFrame", mainFrame)
+sidebar.Size = UDim2.new(0, 160, 1, -36)
+sidebar.Position = UDim2.new(0, 0, 0, 36)
+sidebar.BackgroundTransparency = 1
+sidebar.CanvasSize = UDim2.new(0, 0, 0, 350)
+sidebar.ScrollBarThickness = 0
 
 local sidebarLayout = Instance.new("UIListLayout", sidebar)
 sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
-sidebarLayout.Padding = UDim.new(0, 5)
+sidebarLayout.Padding = UDim.new(0, 2)
 
+local sidebarPadding = Instance.new("UIPadding", sidebar)
+sidebarPadding.PaddingTop = UDim.new(0, 8)
+sidebarPadding.PaddingLeft = UDim.new(0, 8)
+sidebarPadding.PaddingRight = UDim.new(0, 8)
+
+-- CONTENEDOR PRINCIPAL DE PÁGINAS
 local contentContainer = Instance.new("Frame", mainFrame)
-contentContainer.Size = UDim2.new(1, -160, 1, -40)
-contentContainer.Position = UDim2.new(0, 160, 0, 40)
-contentContainer.BackgroundTransparency = 1
+contentContainer.Size = UDim2.new(1, -165, 1, -44)
+contentContainer.Position = UDim2.new(0, 162, 0, 40)
+contentContainer.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+contentContainer.BorderSizePixel = 0
+Instance.new("UICorner", contentContainer).CornerRadius = UDim.new(0, 8)
+local contentStroke = Instance.new("UIStroke", contentContainer)
+contentStroke.Color = Color3.fromRGB(35, 35, 35)
+contentStroke.Thickness = 1
 
 local function createPage()
 	local page = Instance.new("ScrollingFrame", contentContainer)
@@ -136,12 +135,12 @@ local function createPage()
 	
 	local layout = Instance.new("UIListLayout", page)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Padding = UDim.new(0, 8)
+	layout.Padding = UDim.new(0, 6)
 	
 	local pad = Instance.new("UIPadding", page)
-	pad.PaddingTop = UDim.new(0, 12)
-	pad.PaddingLeft = UDim.new(0, 12)
-	pad.PaddingRight = UDim.new(0, 12)
+	pad.PaddingTop = UDim.new(0, 10)
+	pad.PaddingLeft = UDim.new(0, 10)
+	pad.PaddingRight = UDim.new(0, 10)
 	
 	return page
 end
@@ -158,44 +157,69 @@ local pageGraphics = createPage()
 local function createTabButton(name, targetPage, order)
 	local btn = Instance.new("TextButton", sidebar)
 	btn.Size = UDim2.new(1, 0, 0, 30)
-	btn.BackgroundColor3 = Color3.fromRGB(22, 15, 35)
+	btn.BackgroundTransparency = 1
 	btn.Text = "  " .. name
-	btn.TextColor3 = Color3.fromRGB(180, 160, 210)
+	btn.TextColor3 = Color3.fromRGB(160, 160, 160)
 	btn.TextSize = 11
-	btn.Font = Enum.Font.GothamBold
+	btn.Font = Enum.Font.GothamMedium
 	btn.TextXAlignment = Enum.TextXAlignment.Left
 	btn.LayoutOrder = order
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 	
 	btn.MouseButton1Click:Connect(function()
-		pageHome.Visible = false
-		pageAimbot.Visible = false
-		pageVisuals.Visible = false
-		pageMovement.Visible = false
-		pageAutoFarm.Visible = false
-		pageAnims.Visible = false
-		pageGraphics.Visible = false
+		for _, p in pairs(contentContainer:GetChildren()) do
+			if p:IsA("ScrollingFrame") then p.Visible = false end
+		end
+		for _, b in pairs(sidebar:GetChildren()) do
+			if b:IsA("TextButton") then b.TextColor3 = Color3.fromRGB(160, 160, 160) end
+		end
 		targetPage.Visible = true
+		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
 	end)
 end
 
 createTabButton("🏠 Inicio", pageHome, 1)
-createTabButton("🎯 Aimbot / Silent", pageAimbot, 2)
+createTabButton("🎯 Aimbot / Combat", pageAimbot, 2)
 createTabButton("👁️ Visuales & ESP", pageVisuals, 3)
 createTabButton("⚡ Movimiento", pageMovement, 4)
-createTabButton("💰 AutoFarm Monedas", pageAutoFarm, 5)
+createTabButton("💰 AutoFarm", pageAutoFarm, 5)
 createTabButton("🎭 Animaciones", pageAnims, 6)
 createTabButton("💡 Gráficos", pageGraphics, 7)
 
+-- PERFIL DE USUARIO EN LA PARTE INFERIOR DE LA SIDEBAR
+local userProfile = Instance.new("Frame", sidebar)
+userProfile.Size = UDim2.new(1, 0, 0, 45)
+userProfile.Position = UDim2.new(0, 0, 0.8, 0)
+userProfile.BackgroundTransparency = 1
+userProfile.LayoutOrder = 99
+
+local avatarPreview = Instance.new("ImageLabel", userProfile)
+avatarPreview.Size = UDim2.new(0, 32, 0, 32)
+avatarPreview.Position = UDim2.new(0, 4, 0, 6)
+avatarPreview.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+avatarPreview.Image = players:GetUserThumbnailAsync(lp.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+Instance.new("UICorner", avatarPreview).CornerRadius = UDim.new(1, 0)
+
+local userLabel = Instance.new("TextLabel", userProfile)
+userLabel.Size = UDim2.new(1, -40, 1, 0)
+userLabel.Position = UDim2.new(0, 40, 0, 0)
+userLabel.BackgroundTransparency = 1
+userLabel.Text = lp.Name .. "\n<font size='9' color='rgb(120,120,120)'>Delta User</font>"
+userLabel.RichText = true
+userLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+userLabel.TextSize = 10
+userLabel.Font = Enum.Font.GothamMedium
+userLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+-- COMPONENTES DE TARJETAS Y CONTROLES
 local function createCard(parent, title, height)
 	local card = Instance.new("Frame", parent)
 	card.Size = UDim2.new(1, 0, 0, height)
-	card.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
+	card.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	card.BorderSizePixel = 0
-	Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
+	Instance.new("UICorner", card).CornerRadius = UDim.new(0, 6)
 	
 	local stroke = Instance.new("UIStroke", card)
-	stroke.Color = Color3.fromRGB(60, 25, 90)
+	stroke.Color = Color3.fromRGB(42, 42, 42)
 	stroke.Thickness = 1
 	
 	local label = Instance.new("TextLabel", card)
@@ -203,7 +227,7 @@ local function createCard(parent, title, height)
 	label.Position = UDim2.new(0, 10, 0, 6)
 	label.BackgroundTransparency = 1
 	label.Text = title
-	label.TextColor3 = Color3.fromRGB(220, 180, 255)
+	label.TextColor3 = Color3.fromRGB(220, 220, 220)
 	label.TextSize = 11
 	label.Font = Enum.Font.GothamBold
 	label.TextXAlignment = Enum.TextXAlignment.Left
@@ -212,23 +236,28 @@ end
 
 local function createToggle(parent, name, callback)
 	local btn = Instance.new("TextButton", parent)
-	btn.Size = UDim2.new(1, 0, 0, 32)
-	btn.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-	btn.Text = "  " .. name .. ": OFF"
-	btn.TextColor3 = Color3.fromRGB(200, 180, 230)
+	btn.Size = UDim2.new(1, 0, 0, 34)
+	btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	btn.Text = "  " .. name
+	btn.TextColor3 = Color3.fromRGB(200, 200, 200)
 	btn.TextSize = 11
-	btn.Font = Enum.Font.GothamBold
+	btn.Font = Enum.Font.GothamMedium
 	btn.TextXAlignment = Enum.TextXAlignment.Left
 	
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 	local stroke = Instance.new("UIStroke", btn)
-	stroke.Color = Color3.fromRGB(60, 25, 90)
+	stroke.Color = Color3.fromRGB(42, 42, 42)
+	
+	local statusIndicator = Instance.new("Frame", btn)
+	statusIndicator.Size = UDim2.new(0, 10, 0, 10)
+	statusIndicator.Position = UDim2.new(1, -22, 0.5, -5)
+	statusIndicator.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	Instance.new("UICorner", statusIndicator).CornerRadius = UDim.new(1, 0)
 	
 	local active = false
 	btn.MouseButton1Click:Connect(function()
 		active = not active
-		btn.BackgroundColor3 = active and Color3.fromRGB(110, 38, 194) or Color3.fromRGB(18, 12, 28)
-		btn.Text = "  " .. name .. (active and ": ON" or ": OFF")
+		statusIndicator.BackgroundColor3 = active and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(60, 60, 60)
 		callback(active)
 	end)
 end
@@ -236,27 +265,29 @@ end
 local function createSlider(parent, name, minVal, maxVal, defaultVal, callback)
 	local container = Instance.new("Frame", parent)
 	container.Size = UDim2.new(1, 0, 0, 45)
-	container.BackgroundTransparency = 1
+	container.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	Instance.new("UICorner", container).CornerRadius = UDim.new(0, 6)
 
 	local label = Instance.new("TextLabel", container)
-	label.Size = UDim2.new(1, 0, 0, 18)
+	label.Size = UDim2.new(1, -10, 0, 18)
+	label.Position = UDim2.new(0, 10, 0, 4)
 	label.BackgroundTransparency = 1
 	label.Text = "  " .. name .. ": " .. defaultVal
-	label.TextColor3 = Color3.fromRGB(200, 180, 230)
+	label.TextColor3 = Color3.fromRGB(200, 200, 200)
 	label.TextSize = 10
 	label.Font = Enum.Font.GothamMedium
 	label.TextXAlignment = Enum.TextXAlignment.Left
 
 	local sliderBg = Instance.new("Frame", container)
-	sliderBg.Size = UDim2.new(1, 0, 0, 14)
-	sliderBg.Position = UDim2.new(0, 0, 0, 22)
-	sliderBg.BackgroundColor3 = Color3.fromRGB(22, 15, 35)
+	sliderBg.Size = UDim2.new(1, -20, 0, 8)
+	sliderBg.Position = UDim2.new(0, 10, 0, 28)
+	sliderBg.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 	Instance.new("UICorner", sliderBg).CornerRadius = UDim.new(0, 4)
 
 	local sliderFill = Instance.new("Frame", sliderBg)
 	local initialSize = (defaultVal - minVal) / (maxVal - minVal)
 	sliderFill.Size = UDim2.new(initialSize, 0, 1, 0)
-	sliderFill.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+	sliderFill.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
 	Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(0, 4)
 
 	local dragging = false
@@ -283,83 +314,41 @@ local function createSlider(parent, name, minVal, maxVal, defaultVal, callback)
 	end)
 end
 
-local profileCard = createCard(pageHome, "Perfil del Jugador", 100)
-local avatarPreview = Instance.new("ImageLabel", profileCard)
-avatarPreview.Size = UDim2.new(0, 40, 0, 40)
-avatarPreview.Position = UDim2.new(0, 10, 0, 35)
-avatarPreview.BackgroundColor3 = Color3.fromRGB(30, 20, 45)
-avatarPreview.Image = players:GetUserThumbnailAsync(lp.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
-Instance.new("UICorner", avatarPreview).CornerRadius = UDim.new(1, 0)
-
-local accountAgeDays = lp.AccountAge
+-- CONTENIDO DE PÁGINAS
+local profileCard = createCard(pageHome, "Información de Cuenta", 85)
 local userInfoLabel = Instance.new("TextLabel", profileCard)
-userInfoLabel.Size = UDim2.new(1, -65, 0, 55)
-userInfoLabel.Position = UDim2.new(0, 60, 0, 32)
+userInfoLabel.Size = UDim2.new(1, -20, 0, 45)
+userInfoLabel.Position = UDim2.new(0, 10, 0, 32)
 userInfoLabel.BackgroundTransparency = 1
-userInfoLabel.Text = "Usuario: @" .. lp.Name .. "\nID: " .. lp.UserId .. "\nCuenta creada hace: " .. accountAgeDays .. " días\nEjecutor: Delta"
-userInfoLabel.TextColor3 = Color3.fromRGB(180, 160, 210)
+userInfoLabel.Text = "Usuario: " .. lp.Name .. "\nID: " .. lp.UserId .. "\nAntigüedad: " .. lp.AccountAge .. " días"
+userInfoLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
 userInfoLabel.TextSize = 10
 userInfoLabel.Font = Enum.Font.GothamMedium
 userInfoLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-local serverCard = createCard(pageHome, "Información del Servidor & Juego", 75)
-local serverInfoLabel = Instance.new("TextLabel", serverCard)
-serverInfoLabel.Size = UDim2.new(1, -20, 0, 40)
-serverInfoLabel.Position = UDim2.new(0, 10, 0, 28)
-serverInfoLabel.BackgroundTransparency = 1
-serverInfoLabel.Text = "Juego: " .. game.Name .. "\nPlace ID: " .. game.PlaceId
-serverInfoLabel.TextColor3 = Color3.fromRGB(180, 160, 210)
-serverInfoLabel.TextSize = 10
-serverInfoLabel.Font = Enum.Font.GothamMedium
-serverInfoLabel.TextXAlignment = Enum.TextXAlignment.Left
-
 createToggle(pageAimbot, "🎯 Silent Aim / Auto Shoot", function(state) SILENT_AIM_ON = state end)
+createToggle(pageAimbot, "💀 Kill All (Auto Attack)", function(state) KILL_ALL_ON = state end)
 
-local function createPartButton(name, partName)
-	local btn = Instance.new("TextButton", pageAimbot)
-	btn.Size = UDim2.new(1, 0, 0, 30)
-	btn.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-	btn.Text = "  Objetivo: " .. name
-	btn.TextColor3 = Color3.fromRGB(200, 180, 230)
-	btn.TextSize = 11
-	btn.Font = Enum.Font.GothamBold
-	btn.TextXAlignment = Enum.TextXAlignment.Left
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-	
-	btn.MouseButton1Click:Connect(function()
-		TARGET_PART = partName
-		btn.BackgroundColor3 = Color3.fromRGB(110, 38, 194)
-		task.wait(0.2)
-		btn.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-	end)
-end
-
-createPartButton("Cabeza (Head)", "Head")
-createPartButton("Torso (HumanoidRootPart)", "HumanoidRootPart")
-createPartButton("Extremidades / Pies", "LeftFoot")
-
-createToggle(pageAimbot, "💀 Kill All (Auto Knife)", function(state) KILL_ALL_ON = state end)
-createToggle(pageVisuals, "👁️ ESP Players (Highlight + Arma)", function(state) ESP_ON = state end)
+createToggle(pageVisuals, "👁️ ESP Players", function(state) ESP_ON = state end)
 createToggle(pageVisuals, "📦 Hitbox Expander", function(state) HITBOX_ON = state end)
 
 createToggle(pageMovement, "⚡ Speed Hack", function(state) SpeedEnabled = state end)
 createSlider(pageMovement, "Velocidad", 1, 50, 16, function(val) WalkSpeedValue = val end)
 createToggle(pageMovement, "🦘 High Jump", function(state) JumpEnabled = state end)
 createSlider(pageMovement, "Potencia Salto", 50, 200, 50, function(val) JumpPowerValue = val end)
-createToggle(pageMovement, "🛸 Fly Mode (Vuelo)", function(state) FlyEnabled = state end)
-createToggle(pageMovement, "👻 Noclip (Atravesar paredes)", function(state) NoClipEnabled = state end)
-createToggle(pageMovement, "🦘 Infinite Jump", function(state) InfiniteJumpEnabled = state end)
+createToggle(pageMovement, "🛸 Fly Mode", function(state) FlyEnabled = state end)
+createToggle(pageMovement, "👻 Noclip", function(state) NoClipEnabled = state end)
 
-createToggle(pageAutoFarm, "💰 AutoFarm Monedas / Drops", function(state) AUTOFARM_ON = state end)
+createToggle(pageAutoFarm, "💰 AutoFarm Monedas", function(state) AUTOFARM_ON = state end)
 
 local function createAnimButton(name, animId)
 	local btn = Instance.new("TextButton", pageAnims)
 	btn.Size = UDim2.new(1, 0, 0, 32)
-	btn.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-	btn.Text = "  Aplicar Animación: " .. name
-	btn.TextColor3 = Color3.fromRGB(200, 180, 230)
+	btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	btn.Text = "  " .. name
+	btn.TextColor3 = Color3.fromRGB(200, 200, 200)
 	btn.TextSize = 11
-	btn.Font = Enum.Font.GothamBold
+	btn.Font = Enum.Font.GothamMedium
 	btn.TextXAlignment = Enum.TextXAlignment.Left
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 	
@@ -384,8 +373,6 @@ local function createAnimButton(name, animId)
 end
 
 createAnimButton("Toy Animation Pack", "782841498")
-createAnimButton("Adidas / Street Style", "616156119")
-createAnimButton("Knight Animation", "657595757")
 createAnimButton("Zombie Animation", "616158929")
 
 local function setLightingMode(mode)
@@ -393,13 +380,6 @@ local function setLightingMode(mode)
 		lighting.Brightness = 3
 		lighting.ClockTime = 14
 		lighting.GlobalShadows = false
-		lighting.OutdoorAmbient = Color3.fromRGB(200, 200, 200)
-	elseif mode == "FPS" then
-		lighting.Brightness = 1
-		lighting.GlobalShadows = false
-		for _, v in pairs(ws:GetDescendants()) do
-			if v:IsA("BasePart") then v.Material = Enum.Material.SmoothPlastic end
-		end
 	else
 		lighting.Brightness = 1
 		lighting.GlobalShadows = true
@@ -408,33 +388,23 @@ end
 
 local btnBright = Instance.new("TextButton", pageGraphics)
 btnBright.Size = UDim2.new(1, 0, 0, 32)
-btnBright.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-btnBright.Text = "  💡 Modo Iluminación Brillante (Fullbright)"
-btnBright.TextColor3 = Color3.fromRGB(200, 180, 230)
+btnBright.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+btnBright.Text = "  💡 Fullbright"
+btnBright.TextColor3 = Color3.fromRGB(200, 200, 200)
 btnBright.TextSize = 11
-btnBright.Font = Enum.Font.GothamBold
+btnBright.Font = Enum.Font.GothamMedium
 btnBright.TextXAlignment = Enum.TextXAlignment.Left
 Instance.new("UICorner", btnBright).CornerRadius = UDim.new(0, 6)
 btnBright.MouseButton1Click:Connect(function() setLightingMode("Bright") end)
 
-local btnFPS = Instance.new("TextButton", pageGraphics)
-btnFPS.Size = UDim2.new(1, 0, 0, 32)
-btnFPS.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
-btnFPS.Text = "  ⚡ Modo Gráficos Bajos (Optimizar FPS)"
-btnFPS.TextColor3 = Color3.fromRGB(200, 180, 230)
-btnFPS.TextSize = 11
-btnFPS.Font = Enum.Font.GothamBold
-btnFPS.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnFPS).CornerRadius = UDim.new(0, 6)
-btnFPS.MouseButton1Click:Connect(function() setLightingMode("FPS") end)
-
+-- CONTROLES DE LA BARRA SUPERIOR
 local minimized = false
 minimizeBtn.MouseButton1Click:Connect(function()
 	minimized = not minimized
 	contentContainer.Visible = not minimized
 	sidebar.Visible = not minimized
-	mainFrame.Size = minimized and UDim2.new(0, 580, 0, 40) or UDim2.new(0, 580, 0, 360)
-	minimizeBtn.Text = minimized and "+" or "-"
+	mainFrame.Size = minimized and UDim2.new(0, 600, 0, 36) or UDim2.new(0, 600, 0, 380)
+	minimizeBtn.Text = minimized + "+" or "-"
 end)
 
 closeBtn.MouseButton1Click:Connect(function()
@@ -445,6 +415,7 @@ toggleButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = not mainFrame.Visible
 end)
 
+-- LOGICA DE FUNCIONES DE COMBATE Y MOVIMIENTO
 local function isEnemy(player)
 	if player == lp then return false end
 	if lp.Team and player.Team and lp.Team == player.Team then return false end
@@ -455,11 +426,15 @@ local function cleanActivate()
 	pcall(function()
 		if lp.Character then
 			local tool = lp.Character:FindFirstChildOfClass("Tool")
-			if tool then tool:Activate()
-			else
-				vim:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-				task.wait(0.01)
-				vim:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+			if tool then
+				tool:Activate()
+				for _, remote in pairs(tool:GetDescendants()) do
+					if remote:IsA("RemoteEvent") then
+						if remote.Name:lower():find("shoot") or remote.Name:lower():find("fire") or remote.Name:lower():find("attack") or remote.Name:lower():find("hit") then
+							remote:FireServer()
+						end
+					end
+				end
 			end
 		end
 	end)
@@ -468,29 +443,18 @@ end
 task.spawn(function()
 	while true do
 		task.wait(0.08)
-		if SILENT_AIM_ON then
+		if SILENT_AIM_ON or KILL_ALL_ON then
 			pcall(function()
 				local validTargetFound = false
-				local shortestDistance = math.huge
 				for _, v in pairs(players:GetPlayers()) do
 					if isEnemy(v) and v.Character then
 						local hum = v.Character:FindFirstChildOfClass("Humanoid")
 						if hum and hum.Health > 0 then
 							local targetPart = v.Character:FindFirstChild(TARGET_PART) or v.Character:FindFirstChild("Head")
 							if targetPart and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-								local origin = lp.Character.HumanoidRootPart.Position
-								local dist = (origin - targetPart.Position).Magnitude
+								local dist = (lp.Character.HumanoidRootPart.Position - targetPart.Position).Magnitude
 								if dist < 350 then
-									local rp = RaycastParams.new()
-									rp.FilterType = Enum.RaycastFilterType.Exclude
-									rp.FilterDescendantsInstances = {lp.Character}
-									local res = ws:Raycast(origin, (targetPart.Position - origin).Unit * dist, rp)
-									if not res or res.Instance:IsDescendantOf(v.Character) then
-										if dist < shortestDistance then
-											shortestDistance = dist
-											validTargetFound = true
-										end
-									end
+									validTargetFound = true
 								end
 							end
 						end
@@ -502,44 +466,14 @@ task.spawn(function()
 	end
 end)
 
-task.spawn(function()
-	while true do
-		task.wait(0.5)
-		if AUTOFARM_ON then
-			pcall(function()
-				if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-					local hrp = lp.Character.HumanoidRootPart
-					for _, obj in pairs(ws:GetDescendants()) do
-						if obj:IsA("BasePart") and (obj.Name:lower():find("coin") or obj.Name:lower():find("moneda") or obj.Name:lower():find("cash") or obj.Name:lower():find("gold")) then
-							hrp.CFrame = obj.CFrame + Vector3.new(0, 2, 0)
-							task.wait(0.1)
-						end
-					end
-				end
-			end)
-		end
-	end
-end)
-
 runService.RenderStepped:Connect(function()
 	if lp.Character and lp.Character:FindFirstChild("Humanoid") then
 		local hum = lp.Character.Humanoid
 		hum.WalkSpeed = SpeedEnabled and WalkSpeedValue or 16
-		if JumpEnabled then
-			hum.JumpPower = JumpPowerValue
-		end
+		if JumpEnabled then hum.JumpPower = JumpPowerValue end
 	end
-
 	if FlyEnabled and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-		local hrp = lp.Character.HumanoidRootPart
-		hrp.Velocity = Vector3.new(0, 1, 0)
-	end
-end)
-
-uis.JumpRequest:Connect(function()
-	if InfiniteJumpEnabled and lp.Character then
-		local h = lp.Character:FindFirstChildOfClass("Humanoid")
-		if h then h:ChangeState(Enum.HumanoidStateType.Jumping) end
+		lp.Character.HumanoidRootPart.Velocity = Vector3.new(0, 1, 0)
 	end
 end)
 
@@ -559,8 +493,7 @@ runService.RenderStepped:Connect(function()
 			
 			if HITBOX_ON and enemy then
 				hrp.Size = Vector3.new(HITBOX_SIZE, HITBOX_SIZE, HITBOX_SIZE)
-				hrp.Transparency = ESP_ON and 0.7 or 1
-				hrp.Color = Color3.new(0.5, 0, 1)
+				hrp.Transparency = 0.7
 				hrp.CanCollide = false
 			else
 				hrp.Size = Vector3.new(2, 2, 1)
@@ -570,36 +503,11 @@ runService.RenderStepped:Connect(function()
 			if ESP_ON and enemy then
 				if not p.Character:FindFirstChild("Highlight") then
 					local hl = Instance.new("Highlight", p.Character)
-					hl.FillColor = Color3.fromRGB(138, 43, 226)
+					hl.FillColor = Color3.fromRGB(150, 150, 150)
 					hl.OutlineColor = Color3.fromRGB(255, 255, 255)
-				end
-				
-				local toolName = "Ninguna"
-				local tool = p.Character:FindFirstChildOfClass("Tool")
-				if tool then toolName = tool.Name end
-				
-				local bill = p.Character:FindFirstChild("FluzESPBill")
-				if not bill then
-					bill = Instance.new("BillboardGui", p.Character)
-					bill.Name = "FluzESPBill"
-					bill.Size = UDim2.new(0, 100, 0, 40)
-					bill.StudsOffset = Vector3.new(0, 3, 0)
-					bill.AlwaysOnTop = true
-					
-					local text = Instance.new("TextLabel", bill)
-					text.Name = "Text"
-					text.Size = UDim2.new(1, 0, 1, 0)
-					text.BackgroundTransparency = 1
-					text.TextColor3 = Color3.fromRGB(220, 180, 255)
-					text.TextSize = 10
-					text.Font = Enum.Font.GothamBold
-				end
-				if bill:FindFirstChild("Text") then
-					bill.Text.Text = p.Name .. "\nArma: " .. toolName
 				end
 			else
 				if p.Character:FindFirstChild("Highlight") then p.Character.Highlight:Destroy() end
-				if p.Character:FindFirstChild("FluzESPBill") then p.Character.FluzESPBill:Destroy() end
 			end
 		end
 	end
