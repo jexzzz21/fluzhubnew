@@ -210,7 +210,7 @@ toggleButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = not mainFrame.Visible
 end)
 
--- PÁGINA INICIO (Perfil, Cuenta, Sistema, Juego Actual con Logo Exacto)
+-- PÁGINA INICIO
 local function createSectionCard(parent, title, height)
 	local f = Instance.new("Frame", parent)
 	f.Size = UDim2.new(1, 0, 0, height)
@@ -275,7 +275,7 @@ sInfo.TextXAlignment = Enum.TextXAlignment.Left
 sInfo.TextYAlignment = Enum.TextYAlignment.Top
 sInfo.Text = "Juego Actual\n[⚔️DUELS] Duels - Place ID: " .. game.PlaceId
 
--- PÁGINA AIMBOT (Silent Aim + Crosshair)
+-- PÁGINA AIMBOT
 local _G_SilentAim = false
 local _G_Crosshair = false
 
@@ -399,7 +399,7 @@ runService.RenderStepped:Connect(function()
 	end
 end)
 
--- PÁGINA MOVIMIENTO (Velocidad y Salto con Sliders)
+-- PÁGINA MOVIMIENTO
 local function createSlider(parent, name, min, max, callback)
 	local f = Instance.new("Frame", parent)
 	f.Size = UDim2.new(1, 0, 0, 50)
@@ -455,7 +455,7 @@ createSlider(pageMovement, "Altura de Salto", 50, 200, function(v)
 	pcall(function() lp.Character.Humanoid.JumpPower = v end)
 end)
 
--- PÁGINA GRÁFICOS (Shaders, Bajar FPS, Mostrar FPS)
+-- PÁGINA GRÁFICOS
 local _G_FPSShow = false
 local fpsLabel = Instance.new("TextLabel", screenGui)
 fpsLabel.Size = UDim2.new(0, 100, 0, 25)
@@ -546,7 +546,7 @@ btnLowFps.MouseButton1Click:Connect(function()
 	end)
 end)
 
--- PÁGINA ANIMACIONES (Zombie Funcional Sin Bugs de Caminata)
+-- PÁGINA ANIMACIONES
 local function applyZombieAnimation()
 	pcall(function()
 		if lp.Character then
@@ -556,4 +556,9 @@ local function applyZombieAnimation()
 					idle = {"616158929"},
 					walk = {"616168032"},
 					run  = {"616163682"},
-					jump 
+					jump = {"616161997"},
+					fall = {"616160354"},
+					swim = {"616165520"}
+				}
+				for folderName, idList in pairs(zombieData) do
+					local folder = animateScript:FindFirstChild(folderName)
