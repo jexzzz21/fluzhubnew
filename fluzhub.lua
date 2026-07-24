@@ -33,7 +33,7 @@ local tStroke = Instance.new("UIStroke", toggleButton)
 tStroke.Color = Color3.fromRGB(0, 255, 130)
 tStroke.Thickness = 1.5
 
--- Ventana Principal Moderna estilo Fluent
+-- Ventana Principal Moderna estilo T3RA / Fluent
 local mainFrame = Instance.new("Frame", screenGui)
 mainFrame.Size = UDim2.new(0, 560, 0, 360)
 mainFrame.Position = UDim2.new(0.5, -280, 0.5, -180)
@@ -54,11 +54,11 @@ topBar.BorderSizePixel = 0
 Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 10)
 
 local titleLabel = Instance.new("TextLabel", topBar)
-titleLabel.Size = UDim2.new(0, 350, 1, 0)
+titleLabel.Size = UDim2.new(0, 400, 1, 0)
 titleLabel.Position = UDim2.new(0, 15, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "FluzHub | [⚔️DUELS] [v3.0]"
-titleLabel.TextColor3 = Color3.fromRGB(230, 235, 245)
+titleLabel.Text = "FluzHub | by jesuslmk [v3.0]"
+titleLabel.TextColor3 = Color3.fromRGB(240, 245, 250)
 titleLabel.TextSize = 12
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -303,7 +303,7 @@ mt.__index = newcclosure(function(self, k)
 end)
 setreadonly(mt, true)
 
--- ANIMACIONES BLINDADAS (Solución definitiva para Ninja, Toy, Zombie, Levitation, Adidas)
+-- ANIMACIONES BLINDADAS (Ninja, Toy, Zombie, Levitation, Adidas)
 local function applyAnimationPack(packType)
 	pcall(function()
 		if lp.Character then
