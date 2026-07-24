@@ -1,4 +1,3 @@
-
 -- SERVICIOS Y VARIABLES LOCALES
 local players = game:GetService("Players")
 local lp = players.LocalPlayer
