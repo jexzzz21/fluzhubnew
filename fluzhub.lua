@@ -561,4 +561,38 @@ local function applyZombieAnimation()
 					swim = {"616165520"}
 				}
 				for folderName, idList in pairs(zombieData) do
+					local folder = animateScript:FindFirstChild(folderName)				for folderName, idList in pairs(zombieData) do
 					local folder = animateScript:FindFirstChild(folderName)
+					if folder then
+						for _, child in pairs(folder:GetChildren()) do
+							if child:IsA("Animation") then child:Destroy() end
+						end
+						for _, id in ipairs(idList) do
+							local anim = Instance.new("Animation")
+							anim.AnimationId = "rbxassetid://" .. id
+							anim.Parent = folder
+						end
+					end
+				end
+				animateScript.Enabled = false
+				task.wait(0.05)
+				animateScript.Enabled = true
+			end
+		end
+	end)
+end
+
+local btnZombie = Instance.new("TextButton", pageAnims)
+btnZombie.Size = UDim2.new(1, 0, 0, 36)
+btnZombie.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
+btnZombie.Text = "  Aplicar Animación Zombie"
+btnZombie.TextColor3 = Color3.fromRGB(180, 190, 210)
+btnZombie.TextSize = 11
+btnZombie.Font = Enum.Font.GothamMedium
+btnZombie.TextXAlignment = Enum.TextXAlignment.Left
+Instance.new("UICorner", btnZombie).CornerRadius = UDim.new(0, 6)
+
+btnZombie.MouseButton1Click:Connect(function()
+	applyZombieAnimation()
+	btnZombie.TextColor3 = Color3.fromRGB(50, 200, 100)
+end)
