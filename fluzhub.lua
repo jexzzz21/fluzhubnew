@@ -1,598 +1,285 @@
--- Fluz Hub | Duels [v1.5.2] | by jesuslmk
--- Repositorio: jexzzz21/fluzhubnew
+-- Fluz Hub | Duels [v1.5.2]
+local p, rs, ui, ws, lit, cg = game:GetService("Players"), game:GetService("RunService"), game:GetService("UserInputService"), game:GetService("Workspace"), game:GetService("Lighting"), game:GetService("CoreGui")
+local lp, cam = p.LocalPlayer, ws.CurrentCamera
+if cg:FindFirstChild("FluzHubGui") then cg.FluzHubGui:Destroy() end
+local sg = Instance.new("ScreenGui", cg) sg.Name, sg.ResetOnSpawn = "FluzHubGui", false
 
-local players = game:GetService("Players")
-local runService = game:GetService("RunService")
-local userInput = game:GetService("UserInputService")
-local workspace = game:GetService("Workspace")
-local lighting = game:GetService("Lighting")
-local coreGui = game:GetService("CoreGui")
+local tb = Instance.new("ImageButton", sg)
+tb.Size, tb.Position, tb.BackgroundColor3, tb.Image, tb.Active, tb.Draggable = UDim2.new(0,45,0,45), UDim2.new(0.02,0,0.25,0), Color3.fromRGB(18,20,26), "rbxassetid://8126145670", true, true
+tb.ScaleType = Enum.ScaleType.Fit
+Instance.new("UICorner", tb).CornerRadius = UDim.new(0,8)
+local ts = Instance.new("UIStroke", tb) ts.Color, ts.Thickness = Color3.fromRGB(45,50,65), 1.5
 
-local lp = players.LocalPlayer
-local camera = workspace.CurrentCamera
+local mf = Instance.new("Frame", sg)
+mf.Size, mf.Position, mf.BackgroundColor3, mf.Visible = UDim2.new(0,620,0,380), UDim2.new(0.5,-310,0.5,-190), Color3.fromRGB(15,17,22), false
+Instance.new("UICorner", mf).CornerRadius = UDim.new(0,8)
+local ms = Instance.new("UIStroke", mf) ms.Color, ms.Thickness = Color3.fromRGB(35,40,55), 1
 
-if coreGui:FindFirstChild("FluzHubGui") then
-	coreGui.FluzHubGui:Destroy()
+local th = Instance.new("Frame", mf)
+th.Size, th.Position, th.BackgroundColor3 = UDim2.new(0,210,0,36), UDim2.new(0,12,0,10), Color3.fromRGB(22,25,33)
+Instance.new("UICorner", th).CornerRadius = UDim.new(0,6)
+local ths = Instance.new("UIStroke", th) ths.Color, ths.Thickness = Color3.fromRGB(45,120,220), 1
+
+local ha = Instance.new("ImageLabel", th)
+ha.Size, ha.Position, ha.BackgroundTransparency, ha.Image = UDim2.new(0,26,0,26), UDim2.new(0,5,0,5), true, "rbxassetid://8126145670"
+Instance.new("UICorner", ha).CornerRadius = UDim.new(0,13)
+
+local tl = Instance.new("TextLabel", th)
+tl.Size, tl.Position, tl.BackgroundTransparency, tl.Text, tl.TextColor3, tl.TextSize, tl.Font, tl.TextXAlignment = UDim2.new(1,-38,1,0), UDim2.new(0,36,0,0), true, "Fluz Hub | Duels", Color3.fromRGB(235,240,250), 11, Enum.Font.GothamBold, Enum.TextXAlignment.Left
+
+local tbar = Instance.new("Frame", mf)
+tbar.Size, tbar.Position, tbar.BackgroundTransparency = UDim2.new(1,-230,0,36), UDim2.new(0,230,0,10), true
+
+local vl = Instance.new("TextLabel", tbar)
+vl.Size, vl.Position, vl.BackgroundTransparency, vl.Text, vl.TextColor3, vl.TextSize, vl.Font, vl.TextXAlignment = UDim2.new(0,200,1,0), UDim2.new(0,10,0,0), true, "[v1.5.2]", Color3.fromRGB(255,215,0), 11, Enum.Font.GothamBold, Enum.TextXAlignment.Left
+
+local function ctc(txt, px, cb)
+	local b = Instance.new("TextButton", tbar)
+	b.Size, b.Position, b.BackgroundColor3, b.Text, b.TextColor3, b.TextSize, b.Font = UDim2.new(0,75,0,24), UDim2.new(1,px,0.5,-12), Color3.fromRGB(25,28,38), txt, Color3.fromRGB(180,190,210), 9, Enum.Font.GothamBold
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0,4)
+	b.MouseButton1Click:Connect(cb)
+end
+ctc("Minimizar", -245, function() mf.Visible = false end)
+ctc("Maximizar", -160, function() mf.Visible = true end)
+ctc("Destruir", -75, function() sg:Destroy() end)
+
+local sb = Instance.new("ScrollingFrame", mf)
+sb.Size, sb.Position, sb.BackgroundColor3, sb.CanvasSize, sb.ScrollBarThickness = UDim2.new(0,175,1,-60), UDim2.new(0,12,0,52), Color3.fromRGB(11,13,17), UDim2.new(0,0,0,380), 2
+Instance.new("UICorner", sb).CornerRadius = UDim.new(0,6)
+local ul = Instance.new("UIListLayout", sb) ul.SortOrder, ul.Padding = Enum.SortOrder.LayoutOrder, UDim.new(0,3)
+local sbp = Instance.new("UIPadding", sb) sbp.PaddingTop, sbp.PaddingLeft, sbp.PaddingRight = UDim.new(0,6), UDim.new(0,6), UDim.new(0,6)
+
+local function ach(txt)
+	local l = Instance.new("TextLabel", sb)
+	l.Size, l.BackgroundTransparency, l.Text, l.TextColor3, l.TextSize, l.Font, l.TextXAlignment = UDim2.new(1,0,0,22), true, txt, Color3.fromRGB(90,100,120), 9, Enum.Font.GothamBold, Enum.TextXAlignment.Left
 end
 
-local screenGui = Instance.new("ScreenGui", coreGui)
-screenGui.Name = "FluzHubGui"
-screenGui.ResetOnSpawn = false
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
--- Botón Flotante con el ID exacto solicitado
-local toggleButton = Instance.new("ImageButton", screenGui)
-toggleButton.Size = UDim2.new(0, 45, 0, 45)
-toggleButton.Position = UDim2.new(0.02, 0, 0.25, 0)
-toggleButton.BackgroundColor3 = Color3.fromRGB(18, 20, 26)
-toggleButton.Image = "rbxassetid://8126145670"
-toggleButton.ScaleType = Enum.ScaleType.Fit
-toggleButton.Active = true
-toggleButton.Draggable = true
-Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 8)
-
-local tStroke = Instance.new("UIStroke", toggleButton)
-tStroke.Color = Color3.fromRGB(45, 50, 65)
-tStroke.Thickness = 1.5
-
--- Ventana Principal Calcada a T3RA Hub
-local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 620, 0, 380)
-mainFrame.Position = UDim2.new(0.5, -310, 0.5, -190)
-mainFrame.BackgroundColor3 = Color3.fromRGB(15, 17, 22)
-mainFrame.BorderSizePixel = 0
-mainFrame.Visible = false
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
-
-local mStroke = Instance.new("UIStroke", mainFrame)
-mStroke.Color = Color3.fromRGB(35, 40, 55)
-mStroke.Thickness = 1
-
--- Header Superior Estilo T3RA con el Logo Exacto
-local topHeaderCard = Instance.new("Frame", mainFrame)
-topHeaderCard.Size = UDim2.new(0, 210, 0, 36)
-topHeaderCard.Position = UDim2.new(0, 12, 0, 10)
-topHeaderCard.BackgroundColor3 = Color3.fromRGB(22, 25, 33)
-topHeaderCard.BorderSizePixel = 0
-Instance.new("UICorner", topHeaderCard).CornerRadius = UDim.new(0, 6)
-
-local topCardStroke = Instance.new("UIStroke", topHeaderCard)
-topCardStroke.Color = Color3.fromRGB(45, 120, 220)
-topCardStroke.Thickness = 1
-
-local headerAvatar = Instance.new("ImageLabel", topHeaderCard)
-headerAvatar.Size = UDim2.new(0, 26, 0, 26)
-headerAvatar.Position = UDim2.new(0, 5, 0, 5)
-headerAvatar.BackgroundTransparency = 1
-headerAvatar.Image = "rbxassetid://8126145670"
-Instance.new("UICorner", headerAvatar).CornerRadius = UDim.new(0, 13)
-
-local titleLabel = Instance.new("TextLabel", topHeaderCard)
-titleLabel.Size = UDim2.new(1, -38, 1, 0)
-titleLabel.Position = UDim2.new(0, 36, 0, 0)
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "Fluz Hub | Duels"
-titleLabel.TextColor3 = Color3.fromRGB(235, 240, 250)
-titleLabel.TextSize = 11
-titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-
--- Barra Superior con Versión en Amarillo y Controles (Minimizar, Maximizar, Destruir)
-local topBar = Instance.new("Frame", mainFrame)
-topBar.Size = UDim2.new(1, -230, 0, 36)
-topBar.Position = UDim2.new(0, 230, 0, 10)
-topBar.BackgroundTransparency = 1
-
-local versionLabel = Instance.new("TextLabel", topBar)
-versionLabel.Size = UDim2.new(0, 200, 1, 0)
-versionLabel.Position = UDim2.new(0, 10, 0, 0)
-versionLabel.BackgroundTransparency = 1
-versionLabel.Text = "[v1.5.2]"
-versionLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
-versionLabel.TextSize = 11
-versionLabel.Font = Enum.Font.GothamBold
-versionLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-local function createTopControl(text, posX, callback)
-	local btn = Instance.new("TextButton", topBar)
-	btn.Size = UDim2.new(0, 75, 0, 24)
-	btn.Position = UDim2.new(1, posX, 0.5, -12)
-	btn.BackgroundColor3 = Color3.fromRGB(25, 28, 38)
-	btn.Text = text
-	btn.TextColor3 = Color3.fromRGB(180, 190, 210)
-	btn.TextSize = 9
-	btn.Font = Enum.Font.GothamBold
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
-	btn.MouseButton1Click:Connect(callback)
-end
-
-createTopControl("Minimizar", -245, function() mainFrame.Visible = false end)
-createTopControl("Maximizar", -160, function() mainFrame.Visible = true end)
-createTopControl("Destruir", -75, function() screenGui:Destroy() end)
-
--- Sidebar Lateral (Secciones Principales y Configs)
-local sidebar = Instance.new("ScrollingFrame", mainFrame)
-sidebar.Size = UDim2.new(0, 175, 1, -60)
-sidebar.Position = UDim2.new(0, 12, 0, 52)
-sidebar.BackgroundColor3 = Color3.fromRGB(11, 13, 17)
-sidebar.BorderSizePixel = 0
-sidebar.CanvasSize = UDim2.new(0, 0, 0, 380)
-sidebar.ScrollBarThickness = 2
-Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)
-
-local uiLayout = Instance.new("UIListLayout", sidebar)
-uiLayout.SortOrder = Enum.SortOrder.LayoutOrder
-uiLayout.Padding = UDim.new(0, 3)
-
-local sidebarPad = Instance.new("UIPadding", sidebar)
-sidebarPad.PaddingTop = UDim.new(0, 6)
-sidebarPad.PaddingLeft = UDim.new(0, 6)
-sidebarPad.PaddingRight = UDim.new(0, 6)
-
-local function addCategoryHeader(text)
-	local lbl = Instance.new("TextLabel", sidebar)
-	lbl.Size = UDim2.new(1, 0, 0, 22)
-	lbl.BackgroundTransparency = 1
-	lbl.Text = text
-	lbl.TextColor3 = Color3.fromRGB(90, 100, 120)
-	lbl.TextSize = 9
-	lbl.Font = Enum.Font.GothamBold
-	lbl.TextXAlignment = Enum.TextXAlignment.Left
-end
-
--- Contenedor de Páginas
-local container = Instance.new("Frame", mainFrame)
-container.Size = UDim2.new(1, -200, 1, -60)
-container.Position = UDim2.new(0, 194, 0, 52)
-container.BackgroundColor3 = Color3.fromRGB(11, 13, 17)
-container.BorderSizePixel = 0
-Instance.new("UICorner", container).CornerRadius = UDim.new(0, 6)
+local cnt = Instance.new("Frame", mf)
+cnt.Size, cnt.Position, cnt.BackgroundColor3 = UDim2.new(1,-200,1,-60), UDim2.new(0,194,0,52), Color3.fromRGB(11,13,17)
+Instance.new("UICorner", cnt).CornerRadius = UDim.new(0,6)
 
 local pages = {}
-local function createPage(name)
-	local p = Instance.new("ScrollingFrame", container)
-	p.Size = UDim2.new(1, 0, 1, 0)
-	p.BackgroundTransparency = 1
-	p.Visible = false
-	p.CanvasSize = UDim2.new(0, 0, 0, 550)
-	p.ScrollBarThickness = 3
-	
-	local l = Instance.new("UIListLayout", p)
-	l.SortOrder = Enum.SortOrder.LayoutOrder
-	l.Padding = UDim.new(0, 8)
-	
-	local pad = Instance.new("UIPadding", p)
-	pad.PaddingTop = UDim.new(0, 12)
-	pad.PaddingLeft = UDim.new(0, 12)
-	pad.PaddingRight = UDim.new(0, 12)
-	
-	pages[name] = p
-	return p
+local function cp(name)
+	local p_ = Instance.new("ScrollingFrame", cnt)
+	p_.Size, p_.BackgroundTransparency, p_.Visible, p_.CanvasSize, p_.ScrollBarThickness = UDim2.new(1,0,1,0), true, false, UDim2.new(0,0,0,550), 3
+	local l_ = Instance.new("UIListLayout", p_) l_.SortOrder, l_.Padding = Enum.SortOrder.LayoutOrder, UDim.new(0,8)
+	local pad_ = Instance.new("UIPadding", p_) pad_.PaddingTop, pad_.PaddingLeft, pad_.PaddingRight = UDim.new(0,12), UDim.new(0,12), UDim.new(0,12)
+	pages[name] = p_
+	return p_
 end
 
-local pageHome = createPage("Inicio")
-local pageAimbot = createPage("Aimbot")
-local pageVisuals = createPage("Visuales")
-local pageMovement = createPage("Movimiento")
-local pageGraphics = createPage("Gráficos")
-local pageAnims = createPage("Animaciones")
-
+local pHome, pAim, pVis, pMov, pGrp, pAni = cp("Inicio"), cp("Aimbot"), cp("Visuales"), cp("Movimiento"), cp("Gráficos"), cp("Animaciones")
 pages["Inicio"].Visible = true
 
-local function createTabBtn(name, targetPage)
-	local btn = Instance.new("TextButton", sidebar)
-	btn.Size = UDim2.new(1, 0, 0, 30)
-	btn.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-	btn.Text = "  " .. name
-	btn.TextColor3 = Color3.fromRGB(160, 170, 190)
-	btn.TextSize = 10
-	btn.Font = Enum.Font.GothamMedium
-	btn.TextXAlignment = Enum.TextXAlignment.Left
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
-	
-	btn.MouseButton1Click:Connect(function()
-		for _, p in pairs(pages) do p.Visible = false end
-		targetPage.Visible = true
+local function ctb(name, tp)
+	local b = Instance.new("TextButton", sb)
+	b.Size, b.BackgroundColor3, b.Text, b.TextColor3, b.TextSize, b.Font, b.TextXAlignment = UDim2.new(1,0,0,30), Color3.fromRGB(18,21,28), "  "..name, Color3.fromRGB(160,170,190), 10, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0,5)
+	b.MouseButton1Click:Connect(function()
+		for _, v in pairs(pages) do v.Visible = false end
+		tp.Visible = true
 	end)
 end
 
-addCategoryHeader("Funciones Principales")
-createTabBtn("Inicio", pageHome)
-createTabBtn("Aimbot", pageAimbot)
-createTabBtn("Visuales", pageVisuals)
-createTabBtn("Movimiento", pageMovement)
-createTabBtn("Gráficos", pageGraphics)
+ach("Funciones Principales")
+ctb("Inicio", pHome)
+ctb("Aimbot", pAim)
+ctb("Visuales", pVis)
+ctb("Movimiento", pMov)
+ctb("Gráficos", pGrp)
+ach("Configs & Extra")
+ctb("Animaciones", pAni)
 
-addCategoryHeader("Configs & Extra")
-createTabBtn("Animaciones", pageAnims)
+tb.MouseButton1Click:Connect(function() mf.Visible = not mf.Visible end)
 
-toggleButton.MouseButton1Click:Connect(function()
-	mainFrame.Visible = not mainFrame.Visible
-end)
-
--- PÁGINA INICIO
-local function createSectionCard(parent, title, height)
-	local f = Instance.new("Frame", parent)
-	f.Size = UDim2.new(1, 0, 0, height)
-	f.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-	f.BorderSizePixel = 0
-	Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
-	local pad = Instance.new("UIPadding", f)
-	pad.PaddingTop = UDim.new(0, 10)
-	pad.PaddingLeft = UDim.new(0, 12)
-	pad.PaddingRight = UDim.new(0, 12)
-	
+local function csc(par, title, h)
+	local f = Instance.new("Frame", par)
+	f.Size, f.BackgroundColor3 = UDim2.new(1,0,0,h), Color3.fromRGB(18,21,28)
+	Instance.new("UICorner", f).CornerRadius = UDim.new(0,6)
+	local pad = Instance.new("UIPadding", f) pad.PaddingTop, pad.PaddingLeft, pad.PaddingRight = UDim.new(0,10), UDim.new(0,12), UDim.new(0,12)
 	local t = Instance.new("TextLabel", f)
-	t.Size = UDim2.new(1, 0, 0, 18)
-	t.BackgroundTransparency = 1
-	t.Text = title
-	t.TextColor3 = Color3.fromRGB(140, 150, 170)
-	t.TextSize = 10
-	t.Font = Enum.Font.GothamBold
-	t.TextXAlignment = Enum.TextXAlignment.Left
+	t.Size, t.BackgroundTransparency, t.Text, t.TextColor3, t.TextSize, t.Font, t.TextXAlignment = UDim2.new(1,0,0,18), true, title, Color3.fromRGB(140,150,170), 10, Enum.Font.GothamBold, Enum.TextXAlignment.Left
 	return f
 end
 
-local homeCard1 = createSectionCard(pageHome, "Perfil del Jugador", 95)
-local pAvatar = Instance.new("ImageLabel", homeCard1)
-pAvatar.Size = UDim2.new(0, 36, 0, 36)
-pAvatar.Position = UDim2.new(0, 0, 0, 24)
-pAvatar.BackgroundTransparency = 1
-pAvatar.Image = "rbxassetid://8126145670"
-Instance.new("UICorner", pAvatar).CornerRadius = UDim.new(0, 18)
+local hc1 = csc(pHome, "Perfil del Jugador", 95)
+local pa = Instance.new("ImageLabel", hc1)
+pa.Size, pa.Position, pa.BackgroundTransparency, pa.Image = UDim2.new(0,36,0,36), UDim2.new(0,0,0,24), true, "rbxassetid://8126145670"
+Instance.new("UICorner", pa).CornerRadius = UDim.new(0,18)
 
-local pInfo = Instance.new("TextLabel", homeCard1)
-pInfo.Size = UDim2.new(1, -45, 0, 50)
-pInfo.Position = UDim2.new(0, 45, 0, 22)
-pInfo.BackgroundTransparency = 1
-pInfo.TextColor3 = Color3.fromRGB(220, 230, 240)
-pInfo.TextSize = 10
-pInfo.Font = Enum.Font.GothamMedium
-pInfo.TextXAlignment = Enum.TextXAlignment.Left
-pInfo.TextYAlignment = Enum.TextYAlignment.Top
-pInfo.Text = "Usuario: @" .. lp.Name .. "\nID: " .. lp.UserId .. "\nEdad de la cuenta: " .. lp.AccountAge .. " días"
+local pi = Instance.new("TextLabel", hc1)
+pi.Size, pi.Position, pi.BackgroundTransparency, pi.TextColor3, pi.TextSize, pi.Font, pi.TextXAlignment, pi.TextYAlignment = UDim2.new(1,-45,0,50), UDim2.new(0,45,0,22), true, Color3.fromRGB(220,230,240), 10, Enum.Font.GothamMedium, Enum.TextXAlignment.Left, Enum.TextYAlignment.Top
+pi.Text = "Usuario: @"..lp.Name.."\nID: "..lp.UserId.."\nEdad: "..lp.AccountAge.." días"
 
-local homeCard2 = createSectionCard(pageHome, "Sistema", 55)
-local sysInfo = Instance.new("TextLabel", homeCard2)
-sysInfo.Size = UDim2.new(1, 0, 0, 20)
-sysInfo.Position = UDim2.new(0, 0, 0, 22)
-sysInfo.BackgroundTransparency = 1
-sysInfo.TextColor3 = Color3.fromRGB(200, 210, 220)
-sysInfo.TextSize = 10
-sysInfo.Font = Enum.Font.GothamMedium
-sysInfo.TextXAlignment = Enum.TextXAlignment.Left
-sysInfo.Text = "Ejecutor actual: Delta"
+local hc2 = csc(pHome, "Sistema", 55)
+local si = Instance.new("TextLabel", hc2)
+si.Size, si.Position, si.BackgroundTransparency, si.TextColor3, si.TextSize, si.Font, si.TextXAlignment = UDim2.new(1,0,0,20), UDim2.new(0,0,0,22), true, Color3.fromRGB(200,210,220), 10, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+si.Text = "Ejecutor: Delta"
 
-local homeCard3 = createSectionCard(pageHome, "Información del Servidor", 75)
-local sInfo = Instance.new("TextLabel", homeCard3)
-sInfo.Size = UDim2.new(1, 0, 0, 35)
-sInfo.Position = UDim2.new(0, 0, 0, 22)
-sInfo.BackgroundTransparency = 1
-sInfo.TextColor3 = Color3.fromRGB(200, 210, 220)
-sInfo.TextSize = 10
-sInfo.Font = Enum.Font.GothamMedium
-sInfo.TextXAlignment = Enum.TextXAlignment.Left
-sInfo.TextYAlignment = Enum.TextYAlignment.Top
-sInfo.Text = "Juego Actual\n[⚔️DUELS] Duels - Place ID: " .. game.PlaceId
+local hc3 = csc(pHome, "Información del Servidor", 75)
+local srv = Instance.new("TextLabel", hc3)
+srv.Size, srv.Position, srv.BackgroundTransparency, srv.TextColor3, srv.TextSize, srv.Font, srv.TextXAlignment, srv.TextYAlignment = UDim2.new(1,0,0,35), UDim2.new(0,0,0,22), true, Color3.fromRGB(200,210,220), 10, Enum.Font.GothamMedium, Enum.TextXAlignment.Left, Enum.TextYAlignment.Top
+srv.Text = "Juego Actual\n[⚔️DUELS] Place ID: "..game.PlaceId
 
--- PÁGINA AIMBOT
-local _G_SilentAim = false
-local _G_Crosshair = false
-
-local btnAim = Instance.new("TextButton", pageAimbot)
-btnAim.Size = UDim2.new(1, 0, 0, 36)
-btnAim.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-btnAim.Text = "  Silent Aim: OFF"
-btnAim.TextColor3 = Color3.fromRGB(180, 190, 210)
-btnAim.TextSize = 11
-btnAim.Font = Enum.Font.GothamMedium
-btnAim.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnAim).CornerRadius = UDim.new(0, 6)
-
-btnAim.MouseButton1Click:Connect(function()
-	_G_SilentAim = not _G_SilentAim
-	btnAim.Text = _G_SilentAim and "  Silent Aim: ON" or "  Silent Aim: OFF"
-	btnAim.TextColor3 = _G_SilentAim and Color3.fromRGB(50, 200, 100) or Color3.fromRGB(180, 190, 210)
+local saOn, crOn = false, false
+local bAim = Instance.new("TextButton", pAim)
+bAim.Size, bAim.BackgroundColor3, bAim.Text, bAim.TextColor3, bAim.TextSize, bAim.Font, bAim.TextXAlignment = UDim2.new(1,0,0,36), Color3.fromRGB(18,21,28), "  Silent Aim: OFF", Color3.fromRGB(180,190,210), 11, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+Instance.new("UICorner", bAim).CornerRadius = UDim.new(0,6)
+bAim.MouseButton1Click:Connect(function()
+	saOn = not saOn
+	bAim.Text = saOn and "  Silent Aim: ON" or "  Silent Aim: OFF"
+	bAim.TextColor3 = saOn and Color3.fromRGB(50,200,100) or Color3.fromRGB(180,190,210)
 end)
 
-local crosshairGui = Instance.new("Frame", screenGui)
-crosshairGui.Size = UDim2.new(0, 6, 0, 6)
-crosshairGui.Position = UDim2.new(0.5, -3, 0.5, -3)
-crosshairGui.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-crosshairGui.Visible = false
-Instance.new("UICorner", crosshairGui).CornerRadius = UDim.new(1, 0)
+local ch = Instance.new("Frame", sg)
+ch.Size, ch.Position, ch.BackgroundColor3, ch.Visible = UDim2.new(0,6,0,6), UDim2.new(0.5,-3,0.5,-3), Color3.fromRGB(255,255,255), false
+Instance.new("UICorner", ch).CornerRadius = UDim.new(1,0)
 
-local btnCross = Instance.new("TextButton", pageAimbot)
-btnCross.Size = UDim2.new(1, 0, 0, 36)
-btnCross.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-btnCross.Text = "  Crosshair: OFF"
-btnCross.TextColor3 = Color3.fromRGB(180, 190, 210)
-btnCross.TextSize = 11
-btnCross.Font = Enum.Font.GothamMedium
-btnCross.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnCross).CornerRadius = UDim.new(0, 6)
-
-btnCross.MouseButton1Click:Connect(function()
-	_G_Crosshair = not _G_Crosshair
-	crosshairGui.Visible = _G_Crosshair
-	btnCross.Text = _G_Crosshair and "  Crosshair: ON" or "  Crosshair: OFF"
-	btnCross.TextColor3 = _G_Crosshair and Color3.fromRGB(50, 200, 100) or Color3.fromRGB(180, 190, 210)
+local bCr = Instance.new("TextButton", pAim)
+bCr.Size, bCr.BackgroundColor3, bCr.Text, bCr.TextColor3, bCr.TextSize, bCr.Font, bCr.TextXAlignment = UDim2.new(1,0,0,36), Color3.fromRGB(18,21,28), "  Crosshair: OFF", Color3.fromRGB(180,190,210), 11, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+Instance.new("UICorner", bCr).CornerRadius = UDim.new(0,6)
+bCr.MouseButton1Click:Connect(function()
+	crOn = not crOn
+	ch.Visible = crOn
+	bCr.Text = crOn and "  Crosshair: ON" or "  Crosshair: OFF"
+	bCr.TextColor3 = crOn and Color3.fromRGB(50,200,100) or Color3.fromRGB(180,190,210)
 end)
 
-local function getClosestPlayer()
-	local targetPart = nil
-	local shortestDist = math.huge
-	for _, v in pairs(players:GetPlayers()) do
-		if v ~= lp and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Humanoid") then
-			if v.Character.Humanoid.Health > 0 then
-				local part = v.Character.HumanoidRootPart
-				local screenPos, onScreen = camera:WorldToViewportPoint(part.Position)
-				if onScreen then
-					local dist = (Vector2.new(screenPos.X, screenPos.Y) - userInput:GetMouseLocation()).Magnitude
-					if dist < shortestDist then
-						shortestDist = dist
-						targetPart = part
-					end
-				end
+local function gcp()
+	local tp, sd = nil, math.huge
+	for _, v in pairs(p:GetPlayers()) do
+		if v ~= lp and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+			local pt = v.Character.HumanoidRootPart
+			local sp, onS = cam:WorldToViewportPoint(pt.Position)
+			if onS then
+				local d = (Vector2.new(sp.X, sp.Y) - ui:GetMouseLocation()).Magnitude
+				if d < sd then sd, tp = d, pt end
 			end
 		end
 	end
-	return targetPart
+	return tp
 end
 
 local mt = getrawmetatable(game)
-local oldIndex = mt.__index
+local oi = mt.__index
 setreadonly(mt, false)
-mt.__index = newcclosure(function(self, k)
-	if _G_SilentAim and not checkcaller() and k == "Hit" then
-		local targetPart = getClosestPlayer()
-		if targetPart then
-			return targetPart.CFrame
-		end
+mt.__index = newcclosure(function(s, k)
+	if saOn and not checkcaller() and k == "Hit" then
+		local tp = gcp()
+		if tp then return tp.CFrame end
 	end
-	return oldIndex(self, k)
+	return oi(s, k)
 end)
 setreadonly(mt, true)
 
--- PÁGINA VISUALES (ESP RGB)
-local _G_ESP = false
-local espObjects = {}
-
-local btnEsp = Instance.new("TextButton", pageVisuals)
-btnEsp.Size = UDim2.new(1, 0, 0, 36)
-btnEsp.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-btnEsp.Text = "  Esp: OFF"
-btnEsp.TextColor3 = Color3.fromRGB(180, 190, 210)
-btnEsp.TextSize = 11
-btnEsp.Font = Enum.Font.GothamMedium
-btnEsp.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnEsp).CornerRadius = UDim.new(0, 6)
-
-btnEsp.MouseButton1Click:Connect(function()
-	_G_ESP = not _G_ESP
-	btnEsp.Text = _G_ESP and "  Esp: ON" or "  Esp: OFF"
-	btnEsp.TextColor3 = _G_ESP and Color3.fromRGB(50, 200, 100) or Color3.fromRGB(180, 190, 210)
-	if not _G_ESP then
-		for _, box in pairs(espObjects) do if box then box:Destroy() end end
-		espObjects = {}
-	end
+local espOn, esps = false, {}
+local bEsp = Instance.new("TextButton", pVis)
+bEsp.Size, bEsp.BackgroundColor3, bEsp.Text, bEsp.TextColor3, bEsp.TextSize, bEsp.Font, bEsp.TextXAlignment = UDim2.new(1,0,0,36), Color3.fromRGB(18,21,28), "  Esp: OFF", Color3.fromRGB(180,190,210), 11, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+Instance.new("UICorner", bEsp).CornerRadius = UDim.new(0,6)
+bEsp.MouseButton1Click:Connect(function()
+	espOn = not espOn
+	bEsp.Text = espOn and "  Esp: ON" or "  Esp: OFF"
+	bEsp.TextColor3 = espOn and Color3.fromRGB(50,200,100) or Color3.fromRGB(180,190,210)
+	if not espOn then for _, x in pairs(esps) do if x then x:Destroy() end end esps = {} end
 end)
 
-runService.RenderStepped:Connect(function()
-	if _G_ESP then
-		local hue = tick() % 5 / 5
-		local rgbColor = Color3.fromHSV(hue, 1, 1)
-		for _, v in pairs(players:GetPlayers()) do
+rs.RenderStepped:Connect(function()
+	if espOn then
+		local col = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+		for _, v in pairs(p:GetPlayers()) do
 			if v ~= lp and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
 				local hrp = v.Character.HumanoidRootPart
 				if not hrp:FindFirstChild("FluzESP") then
-					local highlight = Instance.new("Highlight", hrp)
-					highlight.Name = "FluzESP"
-					highlight.FillTransparency = 0.5
-					table.insert(espObjects, highlight)
+					local hl = Instance.new("Highlight", hrp) hl.Name, hl.FillTransparency = "FluzESP", 0.5
+					table.insert(esps, hl)
 				else
-					hrp.FluzESP.FillColor = rgbColor
-					hrp.FluzESP.OutlineColor = rgbColor
+					hrp.FluzESP.FillColor, hrp.FluzESP.OutlineColor = col, col
 				end
 			end
 		end
 	end
 end)
 
--- PÁGINA MOVIMIENTO
-local function createSlider(parent, name, min, max, callback)
-	local f = Instance.new("Frame", parent)
-	f.Size = UDim2.new(1, 0, 0, 50)
-	f.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-	f.BorderSizePixel = 0
-	Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
-	
+local function cs(par, name, min, max, cb)
+	local f = Instance.new("Frame", par)
+	f.Size, f.BackgroundColor3 = UDim2.new(1,0,0,50), Color3.fromRGB(18,21,28)
+	Instance.new("UICorner", f).CornerRadius = UDim.new(0,6)
 	local l = Instance.new("TextLabel", f)
-	l.Size = UDim2.new(1, -12, 0, 20)
-	l.Position = UDim2.new(0, 6, 0, 4)
-	l.BackgroundTransparency = 1
-	l.Text = "  " .. name .. ": " .. min
-	l.TextColor3 = Color3.fromRGB(180, 190, 210)
-	l.TextSize = 10
-	l.Font = Enum.Font.GothamMedium
-	l.TextXAlignment = Enum.TextXAlignment.Left
-	
+	l.Size, l.Position, l.BackgroundTransparency, l.Text, l.TextColor3, l.TextSize, l.Font, l.TextXAlignment = UDim2.new(1,-12,0,20), UDim2.new(0,6,0,4), true, "  "..name..": "..min, Color3.fromRGB(180,190,210), 10, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
 	local bar = Instance.new("TextButton", f)
-	bar.Size = UDim2.new(1, -24, 0, 6)
-	bar.Position = UDim2.new(0, 12, 0, 32)
-	bar.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-	bar.Text = ""
-	Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
-	
+	bar.Size, bar.Position, bar.BackgroundColor3, bar.Text = UDim2.new(1,-24,0,6), UDim2.new(0,12,0,32), Color3.fromRGB(30,35,45), ""
+	Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
 	local fill = Instance.new("Frame", bar)
-	fill.Size = UDim2.new(0, 0, 1, 0)
-	fill.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
-	Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
-	
-	local dragging = false
-	bar.MouseButton1Down:Connect(function() dragging = true end)
-	userInput.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = false
-		end
-	end)
-	userInput.InputChanged:Connect(function(input)
-		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			local pos = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+	fill.Size, fill.BackgroundColor3 = UDim2.new(0,0,1,0), Color3.fromRGB(50,150,255)
+	Instance.new("UICorner", fill).CornerRadius = UDim.new(1,0)
+	local dg = false
+	bar.MouseButton1Down:Connect(function() dg = true end)
+	ui.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dg = false end end)
+	ui.InputChanged:Connect(function(i)
+		if dg and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+			local pos = math.clamp((i.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
 			fill.Size = UDim2.new(pos, 0, 1, 0)
 			local val = math.floor(min + (max - min) * pos)
-			l.Text = "  " .. name .. ": " .. val
-			callback(val)
+			l.Text = "  "..name..": "..val
+			cb(val)
 		end
 	end)
 end
 
-createSlider(pageMovement, "Velocidad", 16, 120, function(v)
-	pcall(function() lp.Character.Humanoid.WalkSpeed = v end)
+cs(pMov, "Velocidad", 16, 120, function(v) pcall(function() lp.Character.Humanoid.WalkSpeed = v end) end)
+cs(pMov, "Altura de Salto", 50, 200, function(v) pcall(function() lp.Character.Humanoid.JumpPower = v end) end)
+
+local fpsL = Instance.new("TextLabel", sg)
+fpsL.Size, fpsL.Position, fpsL.BackgroundTransparency, fpsL.BackgroundColor3, fpsL.TextColor3, fpsL.TextSize, fpsL.Font, fpsL.Visible = UDim2.new(0,100,0,25), UDim2.new(0,15,0,15), 0.5, Color3.fromRGB(0,0,0), Color3.fromRGB(50,255,50), 12, Enum.Font.GothamBold, false
+Instance.new("UICorner", fpsL).CornerRadius = UDim.new(0,4)
+local lt, fc = tick(), 0
+rs.RenderStepped:Connect(function()
+	fc = fc + 1
+	if tick() - lt >= 1 then fpsL.Text = "FPS: "..fc fc, lt = 0, tick() end
 end)
 
-createSlider(pageMovement, "Altura de Salto", 50, 200, function(v)
-	pcall(function() lp.Character.Humanoid.JumpPower = v end)
+local bFps = Instance.new("TextButton", pGrp)
+bFps.Size, bFps.BackgroundColor3, bFps.Text, bFps.TextColor3, bFps.TextSize, bFps.Font, bFps.TextXAlignment = UDim2.new(1,0,0,36), Color3.fromRGB(18,21,28), "  Mostrar FPS: OFF", Color3.fromRGB(180,190,210), 11, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+Instance.new("UICorner", bFps).CornerRadius = UDim.new(0,6)
+bFps.MouseButton1Click:Connect(function()
+	fpsL.Visible = not fpsL.Visible
+	bFps.Text = fpsL.Visible and "  Mostrar FPS: ON" or "  Mostrar FPS: OFF"
+	bFps.TextColor3 = fpsL.Visible and Color3.fromRGB(50,200,100) or Color3.fromRGB(180,190,210)
 end)
 
--- PÁGINA GRÁFICOS
-local _G_FPSShow = false
-local fpsLabel = Instance.new("TextLabel", screenGui)
-fpsLabel.Size = UDim2.new(0, 100, 0, 25)
-fpsLabel.Position = UDim2.new(0, 15, 0, 15)
-fpsLabel.BackgroundTransparency = 0.5
-fpsLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-fpsLabel.TextColor3 = Color3.fromRGB(50, 255, 50)
-fpsLabel.TextSize = 12
-fpsLabel.Font = Enum.Font.GothamBold
-fpsLabel.Visible = false
-Instance.new("UICorner", fpsLabel).CornerRadius = UDim.new(0, 4)
-
-local lastTick = tick()
-local frameCount = 0
-runService.RenderStepped:Connect(function()
-	frameCount = frameCount + 1
-	if tick() - lastTick >= 1 then
-		fpsLabel.Text = "FPS: " .. frameCount
-		frameCount = 0
-		lastTick = tick()
-	end
-end)
-
-local btnFps = Instance.new("TextButton", pageGraphics)
-btnFps.Size = UDim2.new(1, 0, 0, 36)
-btnFps.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-btnFps.Text = "  Mostrar FPS: OFF"
-btnFps.TextColor3 = Color3.fromRGB(180, 190, 210)
-btnFps.TextSize = 11
-btnFps.Font = Enum.Font.GothamMedium
-btnFps.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnFps).CornerRadius = UDim.new(0, 6)
-
-btnFps.MouseButton1Click:Connect(function()
-	_G_FPSShow = not _G_FPSShow
-	fpsLabel.Visible = _G_FPSShow
-	btnFps.Text = _G_FPSShow and "  Mostrar FPS: ON" or "  Mostrar FPS: OFF"
-	btnFps.TextColor3 = _G_FPSShow and Color3.fromRGB(50, 200, 100) or Color3.fromRGB(180, 190, 210)
-end)
-
-local btnShader = Instance.new("TextButton", pageGraphics)
-btnShader.Size = UDim2.new(1, 0, 0, 36)
-btnShader.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-btnShader.Text = "  Shader Bonito (Cinemático): OFF"
-btnShader.TextColor3 = Color3.fromRGB(180, 190, 210)
-btnShader.TextSize = 11
-btnShader.Font = Enum.Font.GothamMedium
-btnShader.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnShader).CornerRadius = UDim.new(0, 6)
-
-local shaderEffect = nil
-btnShader.MouseButton1Click:Connect(function()
-	if not shaderEffect or not lighting:FindFirstChild("FluzShader") then
-		shaderEffect = Instance.new("ColorCorrectionEffect", lighting)
-		shaderEffect.Name = "FluzShader"
-		shaderEffect.Brightness = 0.05
-		shaderEffect.Contrast = 0.2
-		shaderEffect.Saturation = 0.15
-		btnShader.Text = "  Shader Bonito (Cinemático): ON"
-		btnShader.TextColor3 = Color3.fromRGB(50, 200, 100)
+local bSh = Instance.new("TextButton", pGrp)
+bSh.Size, bSh.BackgroundColor3, bSh.Text, bSh.TextColor3, bSh.TextSize, bSh.Font, bSh.TextXAlignment = UDim2.new(1,0,0,36), Color3.fromRGB(18,21,28), "  Shader Bonito: OFF", Color3.fromRGB(180,190,210), 11, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+Instance.new("UICorner", bSh).CornerRadius = UDim.new(0,6)
+local sh = nil
+bSh.MouseButton1Click:Connect(function()
+	if not sh or not lit:FindFirstChild("FluzShader") then
+		sh = Instance.new("ColorCorrectionEffect", lit) sh.Name, sh.Brightness, sh.Contrast, sh.Saturation = "FluzShader", 0.05, 0.2, 0.15
+		bSh.Text, bSh.TextColor3 = "  Shader Bonito: ON", Color3.fromRGB(50,200,100)
 	else
-		shaderEffect:Destroy()
-		shaderEffect = nil
-		btnShader.Text = "  Shader Bonito (Cinemático): OFF"
-		btnShader.TextColor3 = Color3.fromRGB(180, 190, 210)
+		sh:Destroy() sh = nil
+		bSh.Text, bSh.TextColor3 = "  Shader Bonito: OFF", Color3.fromRGB(180,190,210)
 	end
 end)
 
-local btnLowFps = Instance.new("TextButton", pageGraphics)
-btnLowFps.Size = UDim2.new(1, 0, 0, 36)
-btnLowFps.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-btnLowFps.Text = "  Modo Bajar FPS (Ahorro): OFF"
-btnLowFps.TextColor3 = Color3.fromRGB(180, 190, 210)
-btnLowFps.TextSize = 11
-btnLowFps.Font = Enum.Font.GothamMedium
-btnLowFps.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnLowFps).CornerRadius = UDim.new(0, 6)
-
-local lowFpsActive = false
-btnLowFps.MouseButton1Click:Connect(function()
-	lowFpsActive = not lowFpsActive
-	btnLowFps.Text = lowFpsActive and "  Modo Bajar FPS (Ahorro): ON" or "  Modo Bajar FPS (Ahorro): OFF"
-	btnLowFps.TextColor3 = lowFpsActive and Color3.fromRGB(50, 200, 100) or Color3.fromRGB(180, 190, 210)
-	task.spawn(function()
-		while lowFpsActive do
-			task.wait(1 / 15)
-		end
-	end)
-end)
-
--- PÁGINA ANIMACIONES
-local function applyZombieAnimation()
+local bAni = Instance.new("TextButton", pAni)
+bAni.Size, bAni.BackgroundColor3, bAni.Text, bAni.TextColor3, bAni.TextSize, bAni.Font, bAni.TextXAlignment = UDim2.new(1,0,0,36), Color3.fromRGB(18,21,28), "  Aplicar Animación Zombie", Color3.fromRGB(180,190,210), 11, Enum.Font.GothamMedium, Enum.TextXAlignment.Left
+Instance.new("UICorner", bAni).CornerRadius = UDim.new(0,6)
+bAni.MouseButton1Click:Connect(function()
 	pcall(function()
-		if lp.Character then
-			local animateScript = lp.Character:FindFirstChild("Animate")
-			if animateScript then
-				local zombieData = {
-					idle = {"616158929"},
-					walk = {"616168032"},
-					run  = {"616163682"},
-					jump = {"616161997"},
-					fall = {"616160354"},
-					swim = {"616165520"}
-				}
-				for folderName, idList in pairs(zombieData) do
-					local folder = animateScript:FindFirstChild(folderName)				for folderName, idList in pairs(zombieData) do
-					local folder = animateScript:FindFirstChild(folderName)
-					if folder then
-						for _, child in pairs(folder:GetChildren()) do
-							if child:IsA("Animation") then child:Destroy() end
-						end
-						for _, id in ipairs(idList) do
-							local anim = Instance.new("Animation")
-							anim.AnimationId = "rbxassetid://" .. id
-							anim.Parent = folder
-						end
+		local anim = lp.Character and lp.Character:FindFirstChild("Animate")
+		if anim then
+			local zd = {idle={"616158929"}, walk={"616168032"}, run={"616163682"}, jump={"616161997"}, fall={"616160354"}, swim={"616165520"}}
+			for k, ids in pairs(zd) do
+				local f = anim:FindFirstChild(k)
+				if f then
+					for _, c in pairs(f:GetChildren()) do if c:IsA("Animation") then c:Destroy() end end
+					for _, id in ipairs(ids) do
+						local a = Instance.new("Animation") a.AnimationId, a.Parent = "rbxassetid://"..id, f
 					end
 				end
-				animateScript.Enabled = false
-				task.wait(0.05)
-				animateScript.Enabled = true
 			end
+			anim.Enabled = false task.wait(0.05) anim.Enabled = true
 		end
 	end)
-end
-
-local btnZombie = Instance.new("TextButton", pageAnims)
-btnZombie.Size = UDim2.new(1, 0, 0, 36)
-btnZombie.BackgroundColor3 = Color3.fromRGB(18, 21, 28)
-btnZombie.Text = "  Aplicar Animación Zombie"
-btnZombie.TextColor3 = Color3.fromRGB(180, 190, 210)
-btnZombie.TextSize = 11
-btnZombie.Font = Enum.Font.GothamMedium
-btnZombie.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", btnZombie).CornerRadius = UDim.new(0, 6)
-
-btnZombie.MouseButton1Click:Connect(function()
-	applyZombieAnimation()
-	btnZombie.TextColor3 = Color3.fromRGB(50, 200, 100)
+	bAni.TextColor3 = Color3.fromRGB(50,200,100)
 end)
